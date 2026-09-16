@@ -6,520 +6,643 @@
     <title>Wind Medical Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- ใส่ Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --bg-dark: #020617;
+            --panel-bg: rgba(15, 23, 42, 0.75);
+            --panel-border: rgba(56, 189, 248, 0.15);
+        }
+        
         body {
             font-family: 'Prompt', sans-serif;
-            background-color: #0b1120; /* Darker Slate */
-            color: #f8fafc;
-            overflow-y: scroll;
+            background-color: var(--bg-dark);
+            color: #cbd5e1;
+            overflow: hidden; /* ป้องกันการเลื่อนหน้าจอหลัก เพื่อให้เลื่อนแค่ในคอนเทนต์ */
         }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+
+        /* Minimalist Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
         
+        /* Modern Glass Panel */
         .glass-panel {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(59, 130, 246, 0.15);
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
         /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .animate-fade-in {
+            animation: fadeInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         
-        .animate-fade-in-up {
-            animation: fadeInUp 0.4s ease-out forwards;
+        /* Highlight Row Animation */
+        @keyframes flashRow {
+            0% { background-color: rgba(56, 189, 248, 0.3); border-left: 4px solid #38bdf8; }
+            100% { background-color: transparent; border-left: 4px solid transparent; }
+        }
+        .flash-row {
+            animation: flashRow 2.5s ease-out;
+            border-left: 4px solid transparent;
         }
 
-        .tab-btn {
-            position: relative;
-            transition: all 0.3s ease;
+        /* Sidebar Menu Items */
+        .nav-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
         }
-        .tab-btn::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background-color: #3b82f6;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #f8fafc;
         }
-        .tab-btn.active {
-            color: #60a5fa;
-            background: rgba(59, 130, 246, 0.1);
-        }
-        .tab-btn.active::after {
-            width: 100%;
-            box-shadow: 0 0 10px #3b82f6;
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(56,189,248,0.15) 0%, rgba(56,189,248,0) 100%);
+            border-left: 3px solid #38bdf8;
+            color: #38bdf8;
+            font-weight: 500;
         }
         
-        /* Placeholder styling for empty images */
-        img[src*="mockup"] {
-            background-color: rgba(30, 41, 59, 0.8);
-            position: relative;
+        /* Interactive Badges */
+        .badge-red, .badge-amber {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 500; line-height: 1;
+            border-radius: 0.25rem; white-space: nowrap; transition: all 0.2s; cursor: pointer;
         }
+        .badge-red { background-color: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-red:hover { background-color: rgba(239, 68, 68, 0.2); border-color: #ef4444; }
+        
+        .badge-amber { background-color: rgba(245, 158, 11, 0.1); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-amber:hover { background-color: rgba(245, 158, 11, 0.2); border-color: #f59e0b; }
+        
+        /* Image Placeholder */
+        img[src*="mockup"] { background-color: rgba(15, 23, 42, 0.8); position: relative; }
         img[src*="mockup"]::after {
-            content: " Image ";
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            color: #94a3b8;
-            font-size: 0.875rem;
-            width: 100%; text-align: center;
+            content: "รอใส่รูปจริง"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #475569; font-size: 0.875rem; width: 100%; text-align: center;
         }
     </style>
 </head>
-<body class="antialiased flex flex-col min-h-screen">
+<body class="antialiased">
 
-    <!-- Header Section -->
-    <header class="relative bg-cover bg-center h-[350px] border-b border-blue-900/50 shadow-[0_4px_20px_rgba(37,99,235,0.2)] flex-shrink-0" 
-            style="background-image: url('fb7d26cb-c4f9-475a-ba61-d860a9af22f3.png');">
-        <div class="absolute inset-0 bg-slate-950 bg-opacity-80 bg-gradient-to-t from-[#0b1120] to-transparent"></div>
-        <div class="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center">
-            <img src="WindMedic-removebg-preview.png" alt="Logo" class="h-28 md:h-32 object-contain mb-4 drop-shadow-[0_0_15px_rgba(59,130,246,0.6)] hover:scale-105 transition-transform duration-500">
-            <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 drop-shadow-md tracking-wider uppercase">
-                WIND MEDICAL CENTER
-            </h1>
-            <p class="text-sm md:text-base mt-2 text-blue-300 tracking-[0.2em] opacity-80 uppercase">พัดความเจ็บปวดให้ปลิวไป ด้วยความไวของแพทย์ Wind City</p>
-        </div>
-    </header>
+    <!-- Global Background with Overlay -->
+    <div class="fixed inset-0 z-[-1] bg-cover bg-center" style="background-image: url('fb7d26cb-c4f9-475a-ba61-d860a9af22f3.png');">
+        <div class="absolute inset-0 bg-slate-950/85 backdrop-blur-sm"></div>
+    </div>
 
-    <!-- Navigation Tabs -->
-    <nav class="sticky top-0 z-50 glass-panel shadow-lg border-b border-blue-900/40">
-        <div class="container mx-auto px-2 md:px-4">
-            <ul class="flex flex-nowrap overflow-x-auto md:justify-center gap-1 md:gap-4 py-2 text-sm md:text-base font-medium hide-scrollbar">
-                <li><button class="tab-btn px-4 py-2 rounded-t-lg whitespace-nowrap text-slate-400 hover:text-blue-300" data-target="director-info">หน้าแรก</button></li>
-                <li><button class="tab-btn px-4 py-2 rounded-t-lg whitespace-nowrap text-slate-400 hover:text-blue-300" data-target="hospital-rules">กฎโรงพยาบาล</button></li>
-                <li><button class="tab-btn px-4 py-2 rounded-t-lg whitespace-nowrap text-slate-400 hover:text-red-400" data-target="blacklist">BLACKLIST</button></li>
-                <li><button class="tab-btn px-4 py-2 rounded-t-lg whitespace-nowrap text-slate-400 hover:text-emerald-400" data-target="workflow">ขั้นตอนการทำงาน</button></li>
-                <li><button class="tab-btn px-4 py-2 rounded-t-lg whitespace-nowrap text-slate-400 hover:text-yellow-400" data-target="pricing">อัตราค่ารักษา</button></li>
-                <li><button class="tab-btn px-4 py-2 rounded-t-lg whitespace-nowrap text-slate-400 hover:text-indigo-400" data-target="doctor-rules">กฎและวินัยแพทย์</button></li>
-                <li><button class="tab-btn px-4 py-2 rounded-t-lg whitespace-nowrap text-slate-400 hover:text-cyan-400" data-target="hospital-bounds">ขอบเขตโรงพยาบาล</button></li>
-            </ul>
-        </div>
-    </nav>
+    <div class="flex h-screen w-full relative">
 
-    <!-- Main Content Area -->
-    <main class="flex-grow container mx-auto px-4 py-8 max-w-7xl relative min-h-[500px]">
-
-        <!-- ==========================================
-             TAB 0: หน้าแรก
-        =========================================== -->
-        <section id="director-info" class="tab-content hidden">
-            <div class="flex flex-col items-center justify-center py-6 md:py-10">
-                <div class="h-72 sm:h-80 md:h-96 w-auto mb-6 relative">
-                    <img src="chucky-wind-mockup.png" alt="Chucky Wind" class="h-full w-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] min-w-[250px] min-h-[250px] rounded-lg">
-                </div>
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-2 tracking-wide">Chucky Wind</h2>
-                <p class="text-lg md:text-xl text-slate-400 font-medium mb-8">ผู้อำนวยการโรงพยาบาล</p>
-                <!-- <button class="bg-[#1a56db] hover:bg-blue-600 text-white font-semibold py-3 px-16 md:px-24 rounded shadow-[0_4px_15px_rgba(26,86,219,0.5)] transition-all duration-300 hover:-translate-y-1">
-                    บุคลากรทางการแพทย์
-                </button> -->
-            </div>
-        </section>
-
-        <!-- ==========================================
-             TAB 1: กฎโรงพยาบาล
-        =========================================== -->
-        <section id="hospital-rules" class="tab-content hidden">
-            <div class="flex items-center gap-3 mb-6 border-b border-blue-900/50 pb-4">
-                <div class="h-6 w-2 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></div>
-                <h2 class="text-2xl font-bold text-white">ข้อควรปฏิบัติสำหรับประชาชนเมื่อมาใช้บริการ</h2>
-            </div>
+        <!-- Sidebar / MDT Navigation -->
+        <aside id="sidebar" class="w-64 md:w-72 glass-panel border-y-0 border-l-0 flex flex-col fixed md:relative z-40 h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300">
             
-            <div class="bg-blue-950/40 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg shadow-md flex items-start gap-4">
-                <span class="text-2xl">⚠️</span>
-                <p class="text-blue-200 font-medium leading-relaxed">
-                    "การตัดสินใจของผู้อำนวยการโรงพยาบาลถือเป็นที่สิ้นสุดและค่าปรับทุกกรณีเข้าโรงพยาบาล ไม่เข้าบุคคลใดบุคคลหนึ่ง"
-                </p>
+            <!-- Logo Area -->
+            <div class="p-6 border-b border-slate-800/60 flex flex-col items-center">
+                <img src="WindMedic-removebg-preview.png" alt="Logo" class="h-20 object-contain drop-shadow-[0_0_10px_rgba(56,189,248,0.3)] mb-3">
+                <h1 class="text-lg font-bold text-white tracking-widest uppercase text-center leading-tight">
+                    Wind Medical Centre<br><span class="text-sky-400 text-sm font-medium">Medical System</span>
+                </h1>
             </div>
 
-            <div class="glass-panel rounded-xl overflow-hidden shadow-xl">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-[#1e293b] text-blue-300 uppercase text-xs tracking-wider border-b border-slate-700">
-                                <th class="p-4 font-semibold w-16 text-center">ข้อ</th>
-                                <th class="p-4 font-semibold">รายละเอียด</th>
-                                <th class="p-4 font-semibold w-48 text-center">บทลงโทษ</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-800 text-sm">
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">1</td><td class="p-4">อ่าน "กฎการใช้บริการโรงพยาบาล" และ "กฎแบล็คลิสต์" ให้ถี่ถ้วน หากกระทำความผิดและไม่ยอมจ่ายค่าปรับ หรือไม่ยอมให้แพทย์ใส่บิล ทางโรงพยาบาลจะทำการแบล็คลิสต์ทุกกรณีจนกว่าจะมาติดต่อกับทางโรงพยาบาล</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">2</td><td class="p-4">เขตโรงพยาบาลเป็นพื้นที่ของแพทย์ เขตโรงพยาบาลมีข้อห้ามตามกฎ โดยรวมทั้งบริเวณภายในอาคารและนอกอาคารที่มีลานจอดรถสำหรับโรงพยาบาล</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">3</td><td class="p-4">โรงพยาบาลไม่สามารถเป็นที่พักพิงให้กับครอบครัว แก๊ง หรือประชาชนได้ หากรักษาตัวเรียบร้อยแล้ว ต้องออกจากโรงพยาบาลทันที (เตือน 1 ครั้ง หากเตือนแล้วยังอยู่ จะทำการ Blacklist ทันที)</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 10</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">4</td><td class="p-4">หากประชาชนเหม่อจนสลบ แพทย์จะทำการรักษาเรื่อย ๆ (คิดบิลราคาปกติ ไม่ฉีดยา) หากของหายทาง รพ. จะไม่รับผิดชอบทุกกรณี</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">5</td><td class="p-4">ผู้ใช้บริการโรงพยาบาลต้องต้องเก็บรถทุกครั้งก่อนเข้าใช้บริการโรงพยาบาล หากมีการกีดขวางทางเดินรถ ทางเข้า-ออก ของโรงพยาบาล พบเห็นจะปรับเจ้าของรถหรือบุคคลที่เกี่ยวข้องกับรถคันนั้น 1 คน</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 22</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">6</td><td class="p-4">การทะเลาะวิวาทในเขตพื้นที่โรงพยาบาล ทั้งทางวาจาหรือกาย ไม่ว่าฝ่ายใดจะเริ่มก่อน หากมีการตอบโต้กัน แพทย์จะ Blacklist ทั้งคู่ทันที</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 5</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">7</td><td class="p-4">ห้ามพยายามขโมยหรือขโมยยานพาหนะแพทย์</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 7</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">8</td><td class="p-4">ห้ามทำร้ายร่างกายแพทย์จนสลบหรือไม่สลบ มีโทษตามกฎประเทศ ไม่ว่าจะเจตนาหรือไม่ก็ตาม (รวมถึงในพื้นที่ไร้กฎหมาย)</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs block mb-1">Blacklist ข้อ 12, 13, 14</span><span class="text-[10px] text-slate-400">และโดนลงโทษตามกฎประเทศ</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">9</td><td class="p-4">หากกดเรียกเคสแพทย์ ห้ามทำการเคลื่อนย้ายศพเด็ดขาด (รวมถึงย้ายศพมา รพ. เช่นกัน) ต้องแจ้งแพทย์ผ่านทวิตทุกครั้ง ก่อนแพทย์จะเข้าถึงพื้นที่</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 21</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">10</td><td class="p-4">หากเรียกเคสแล้วแต่มีผู้ชุบชีวิตให้ก่อน หรือชุบชีวิตกันเอง โดยที่แพทย์ถึงพื้นที่แล้ว แต่ไม่ได้ทวิตบอก</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 11</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">11</td><td class="p-4">แพทย์จะให้การรักษาที่โรงพยาบาลแห่งใดก็ได้ขึ้นอยู่กับดุลยพินิจแพทย์ เมื่อแพทย์พบเห็นผู้สลบอยู่ภายในเขตพื้นที่ของโรงพยาบาล แพทย์จะทำการขอศพเพื่อทำการรักษาทันที</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">12</td><td class="p-4">เมื่อเข้ารับการรักษาที่โรงพยาบาลให้ถอดสิ่งปกปิดใบหน้าออกทุกครั้ง ห้ามปิดบังใบหน้า
-                                <ul class="list-disc ml-5 mt-2 space-y-1 text-slate-400">
-                                    <li><strong class="text-slate-300">หน้ากาก "เต็มใบ":</strong> หากไม่ถอด แพทย์จะไม่ส่งรักษา (ส่งนอนเตียง/ฉีดยา) ทุกกรณี</li>
-                                    <li><strong class="text-slate-300">หน้ากาก "ครึ่งใบ" / "ผ้าปิดปาก" หรือ "เจตนาปกปิดอัตลักษณ์":</strong> แพทย์จะขอให้ถอด หรือขอดูบัตรประชาชน หากไม่ให้ความร่วมมือจะไม่รักษาทุกกรณี <span class="text-emerald-400">(ยกเว้นคนไข้ที่สลบ แพทย์จะทำการรักษาก่อน และจะขอให้ถอดหน้ากาก)</span></li>
-                                </ul>
-                            </td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 2</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">13</td><td class="p-4">เมื่ออยู่ในเขต รพ. ห้ามก่อความวุ่นวาย ห้ามส่งเสียงรบกวนผู้อื่นหรือแพทย์ ห้ามบลัฟ ห้ามต่อยตีเล่น ห้ามปล้น หรือห้ามทำร้ายร่างกายกันเด็ดขาด</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 5</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">14</td><td class="p-4">ห้ามนำยานพาหนะทุกชนิดรวมถึงสเก็ตบอร์ด ขับเข้าในพื้นที่อาคารโรงพยาบาล รวมถึงขึ้นฟุตบาตหน้าอาคาร</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 3</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">15</td><td class="p-4">หากแพทย์ได้รับเคสจากสถานที่เดิมและจากคนเดิม 3 ครั้งขึ้นไป แพทย์จะตีเป็นการทะเลาะวิวาททันที ต้องเรียกตำรวจมาช่วยระงับเหตุ</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">16</td><td class="p-4">ห้ามควักอาวุธ บั๊มรถ เผารถ ราดน้ำมัน หรือเหยียบศพ ในเขตพื้นที่โรงพยาบาล</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 8</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">17</td><td class="p-4">หากมีการทำร้ายร่างกายภายในเขตของโรงพยาบาล โดยไม่ได้อยู่ในสายตาแพทย์ หากมีหลักฐานสามารถติดต่อแพทย์เพื่อแบล็คลิสต์ได้ทันที (ต้องมีหลักฐานประกอบ)</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">18</td><td class="p-4">หากผู้สลบไม่ได้ทำการกดเรียกเคส แพทย์จะไม่ทำการรักษาให้ทุกกรณี ยกเว้นในกรณีที่มีผู้สลบในระยะสายตาแพทย์ แพทย์จะทำการรักษาให้</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">19</td><td class="p-4">หากก่อเหตุในเขตโรงพยาบาลหรือหน้าแพทย์ แพทย์สามารถทำการ Blacklist ผู้ก่อเหตุได้ทันทีโดยไม่จำเป็นต้องมีหลักฐาน สายตาแพทย์ถือเป็นที่สิ้นสุด</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">20</td><td class="p-4">เคสกิจกรรมที่แพทย์ไม่สามารถเข้าถึงได้ หากกดเรียกเคสมา แพทย์จะทำการประกาศเตือน 1 ครั้ง ต่อการกดเรียกเคส 1 ครั้ง หากคนเดิมกดครบ 3 ครั้ง จะทำการแบล็คลิสต์ทันที</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 15</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">21</td><td class="p-4">ในพื้นที่เคส หากมีสตอรี แพทย์จะปฏิบัติงานตามปกติ แต่ผู้ที่มีสตอรี่ ไม่สามารถนำหลักฐานจากแพทย์หรือนำแพทย์ไปอ้างอิงได้</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">22</td><td class="p-4">ในพื้นที่โรงพยาบาล แพทย์สามารถตรวจบัตรประชาชนได้ทุกคนโดยไม่ต้องขออนุญาต</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">23</td><td class="p-4">หากในพื้นที่เคส มีผู้สลบที่เป็นทั้งหน่วยงานและประชาชน แก๊ง หรือ ครอบครัว แพทย์จะทำการชุบหน่วยงานก่อนทุกกรณี</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">24</td><td class="p-4">หลังแพทย์ชุบและรักษา หากผู้สลบไม่มีรถ แพทย์สามารถไปส่งการาจ หรือ พาวด์ที่ใกล้ที่สุดได้ (ไม่รับส่งแก๊งหรือครอบครัวทุกกรณี) หากมีแพทย์ไปส่งจะถูกลงวินัยแพทย์</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">25</td><td class="p-4">ห้ามใช้พื้นที่ภายในและบริเวณรอบโรงพยาบาล เป็นจุดนัดพบเพื่อเจรจา ซื้อ-ขาย หรือส่งมอบ สิ่งของผิดกฎหมายทุกชนิด หากแพทย์พบเห็นหรือมีเหตุต้องสงสัย แพทย์มีสิทธิ์แจ้งเจ้าหน้าที่ตำรวจเข้าตรวจค้นทันที</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">26</td><td class="p-4">ห้ามประชาชนสวมใส่ชุดหรือเครื่องแบบแพทย์เด็ดขาด</td><td class="p-4 text-center"><span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-1 rounded text-xs whitespace-nowrap">Blacklist ข้อ 17</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">27</td><td class="p-4">ทุกช่องโหว่ของกฎที่เกี่ยวข้องกับโรงพยาบาลและทุกกฎของโรงพยาบาล การตัดสินใจของ ผอ.แพทย์ ถือเป็นที่สิ้นสุด</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- ==========================================
-             TAB 2: BLACKLIST
-        =========================================== -->
-        <section id="blacklist" class="tab-content hidden">
-            <div class="flex items-center gap-3 mb-6 border-b border-red-900/50 pb-4">
-                <div class="h-6 w-2 bg-red-600 rounded-full shadow-[0_0_8px_rgba(220,38,38,0.8)]"></div>
-                <h2 class="text-2xl font-bold text-red-400">ระเบียบ BLACKLIST (บทลงโทษ)</h2>
-            </div>
-            
-            <div class="glass-panel border border-red-800/50 rounded-lg p-5 mb-6 text-sm">
-                <ul class="list-disc list-inside space-y-2 text-slate-300">
-                    <li><strong class="text-red-400">หากไม่เคลียร์ Blacklist:</strong> แพทย์จะทำการรักษา ชุบ / ฉีด x10 ทุกกรณี จนกว่าจะเคลียร์ให้เรียบร้อย</li>
-                    <li><strong class="text-red-400">หลักฐานการ BLACKLIST:</strong> อ้างอิงจากสายตาแพทย์ 1 คนขึ้นไป หรือ ภาพถ่าย F12 (ต้องเห็นภาพเต็ม ไม่ตัดภาพ เห็นรายละเอียดชัดเจน ไม่รับหลักฐานวิดีโอ) <span class="bg-red-900/40 text-red-300 px-1 rounded text-xs ml-2">หลักฐานมีอายุ 24 ชม.</span></li>
-                    <li><strong class="text-red-400">หากเป็็นการแจ้งเอาผิดแพทย์:</strong> ต้องเป็นหลักฐานวิดีโอที่ชัดเจน เต็มจอ</li>
-                </ul>
-            </div>
-
-            <div class="glass-panel rounded-xl overflow-hidden shadow-xl">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-red-950/40 text-red-300 uppercase text-xs tracking-wider border-b border-red-900/30">
-                                <th class="p-4 font-semibold w-12 text-center">#</th>
-                                <th class="p-4 font-semibold">รายละเอียดการกระทำผิด</th>
-                                <th class="p-4 font-semibold w-32 text-right">ค่าปรับ ($)</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-red-900/20 text-sm">
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">1</td><td class="p-4">เคสเคลื่อนย้ายผู้สลบ อุ้มคาเท้า เคสห่อ/เคสปกติ ไม่ใช่ผู้สลบที่กำลังมีสตอรี่ผ่านสภา (หากแพทย์ขอศพแล้วไม่ให้ศพ จะโดนทันที แต่ถ้าเป็นเคสที่กำลังจะเอาศพขึ้นสภา จะไม่โดน blacklist คิดบิลปกติ)</td><td class="p-4 text-right font-mono text-red-400">200,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">2</td><td class="p-4">ปิดบังใบหน้า / ส่งเสียงดังรบกวน / บลัฟ / ใช้คำพูดไม่สุภาพ หรือพูดจาเหน็บแนม ในเขตพื้นที่โรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">100,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">3</td><td class="p-4">การนำยานพาหนะทุกชนิดรวมถึงสเก็ตบอร์ด เข้ามาในพื้นที่อาคารโรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">200,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">4</td><td class="p-4">ขัดขวางการทำงานของแพทย์ แย่งศพที่อยู่ในการดูแล กักศพไม่ยอมให้ศพ บั้มรถแพทย์ พูดจาดูหมิ่น ปล้น หรือข่มขู่ ทำร้ายร่างกาย/ทะเลาะวิวาทขณะมีแพทย์ในพื้นที่นั้น ๆ</td><td class="p-4 text-right font-mono text-red-400">300,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">5</td><td class="p-4">ทะเลาะวิวาททั้งทางกายหรือวาจา หรือสร้างความรบกวนในเขตพื้นที่โรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">200,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">6</td><td class="p-4">อุ้มผู้สลบที่ไม่ใช่แก๊งหรือครอบครัวเดียวกัน ออกจากโรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">200,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">7</td><td class="p-4">ขโมยพาหนะ เผาพาหนะ ราดน้ำมันใส่ ทำลาย หรือก่อความเสียหายแก่ทรัพย์สินของโรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">200,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">8</td><td class="p-4">ควักอาวุธ บั้มรถ ราดน้ำมัน เผารถ เหยียบศพ ในเขตพื้นที่โรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">200,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">9</td><td class="p-4">แก๊ง ครอบครัว หรือ ประชาชน ขณะกำลังมีสตอรี่ ที่ถูกแบล็คลิสต์ เข้ามาในเขตโรงพยาบาลเพื่อรับศพคนในแก๊ง แต่แอบชุบเพื่อนในเขตโรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">500,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">10</td><td class="p-4">แก๊ง ครอบครัว หรือ ประชาชน ขณะกำลังมีสตอรี่ หากเข้ามาทำการรักษาเสร็จสิ้น ต้องออกจากโรงพยาบาลภายใน 15 นาที (นับเวลาตั้งแต่คนแรกที่เข้ามา)</td><td class="p-4 text-right font-mono text-red-400">500,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">11</td><td class="p-4">แก๊ง ครอบครัว หรือ ประชาชน ขณะกำลังมีสตอรี่ ห้ามใช้พื้นที่ รพ.เป็นพื้นที่หลบภัย (หากมีสตอรี่ ห้ามลากเข้ามาใน รพ. เด็ดขาด) ยกเว้นเข้ามาซื้อของ ซ่อมรถ หรือกดเงิน</td><td class="p-4 text-right font-mono text-red-400">500,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">12</td><td class="p-4">เจตนาหรือไม่เจตนา ทำร้ายร่างกายแพทย์ (ไม่สลบ) นอกเขตโรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">400,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">13</td><td class="p-4">เจตนาหรือไม่เจตนา ทำร้ายร่างกายแพทย์จนสลบ ไม่ว่าในหรือนอกเขตโรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">800,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">14</td><td class="p-4">เจตนาหรือไม่เจตนา ทำร้ายร่างกายแพทย์ หรือเจ้าหน้าที่หน่วยงานอื่นๆ ในเขตโรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">600,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">15</td><td class="p-4">เรียกเคสกิจกรรมนอกแมพ ที่แพทย์ไม่สามารถเข้าถึงได้ ตั้้งแต่ 3 ครั้งขึ้นไป</td><td class="p-4 text-right font-mono text-red-400">100,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">16</td><td class="p-4">เคลื่อนย้ายศพ ชุบผู้สลบ หรือกระทำการใด ๆ ก็ตามที่เกี่ยวกับศพ หรีอเป็นการขัดขวาง หรือ ก่อกวนการทำงานแพทย์ภายในวงเคอร์ฟิว ไม่ว่าจะเป็นกลุ่มเดียวกันหรือไม่ก็ตาม</td><td class="p-4 text-right font-mono text-red-400">300,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">17</td><td class="p-4">ห้ามประชาชนสวมใส่เครื่องแบบหรืออุปกรณ์ที่แสดงตนเป็นบุคลากรทางการแพทย์ และห้ามแอบอ้างเป็นหน่วยงานหรือเจ้าหน้าที่ทางการแพทย์โดยเด็ดขาด</td><td class="p-4 text-right font-mono text-red-400">1,000,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">18</td><td class="p-4">ห้ามควักหรือแสดงอาวุธต่อหน้าแพทย์ ขณะกำลังรักษาแพทย์ทำการรักษาผู้สลบนอกเขตโรงพยาบาล ขึ้นอยู่กับดุลยพินิจแพทย์</td><td class="p-4 text-right font-mono text-red-400">200,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">19</td><td class="p-4">หากประชาชนฝ่าฝืนหรือไม่ให้ความร่วมมือคำสั่งจากแพทย์หรือประกาศจากโรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">300,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">20</td><td class="p-4">ไม่อนุญาตให้ประชาชนหรือหน่วยงานอื่นๆ เข้าห้องที่ไม่ได้รับอนุญาตในโรงพยาบาล ยกเว้น ห้องทำการรักษาและห้องที่ได้รับอนุญาตจากแพทย์</td><td class="p-4 text-right font-mono text-red-400">200,000</td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">21</td><td class="p-4">หากกดเรียกแพทย์ (G) และเคลื่อนย้ายเพื่ออำพรางหรืออุ้มทิ้ง หรือมีการเคลื่อนย้ายนำมาส่งโรงพยาบาลหรือฟื้นโดยแพทย์ไม่ได้ทำการ CPR</td><td class="p-4 text-right font-semibold text-orange-400">x3 <span class="block text-[10px] font-normal text-slate-400 mt-1">ตามพื้นที่ที่ค่ารักษาเยอะที่สุด</span></td></tr>
-                            <tr class="hover:bg-red-900/10"><td class="p-4 text-center font-bold text-slate-500">22</td><td class="p-4">ห้ามกีดขวางทางเดินรถ ทางเข้า-ออก ของโรงพยาบาล</td><td class="p-4 text-right font-mono text-red-400">500,000</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="mt-4 p-4 bg-red-950/40 border-l-4 border-red-500 text-sm text-red-300 rounded-r-lg shadow-md">
-                <span class="font-bold text-white block mb-2">หมายเหตุ :</span>
-                <ol class="list-decimal list-inside space-y-1 ml-2">
-                    <li>แบล็คลิสต์ (Blacklist) คือ จะไม่รับเคส ไม่ทำการรักษาทุกกรณี จนกว่าจะทำการชำระ BLACKLIST</li>
-                    <li>สิทธิผู้เล่นใหม่ ไม่ครอบคลุมถึงค่าปรับ Blacklist ทุกกรณี</li>
-                </ol>
-            </div>
-        </section>
-
-        <!-- ==========================================
-             TAB 3: ขั้นตอนการทำงาน
-        =========================================== -->
-        <section id="workflow" class="tab-content hidden">
-            <div class="flex items-center gap-3 mb-6 border-b border-emerald-900/50 pb-4">
-                <div class="h-6 w-2 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
-                <h2 class="text-2xl font-bold text-emerald-400">ขั้นตอนการปฏิบัติงานของแพทย์ตามพื้นที่ต่างๆ</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- การทำงานปกติ -->
-                <div class="glass-panel p-6 rounded-xl border-t-4 border-blue-500 md:col-span-2 shadow-lg">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <span class="text-blue-400 text-xl">📋</span> การทำงานปกติ
-                    </h3>
-                    <ul class="space-y-3 text-slate-300 text-sm">
-                        <li class="flex gap-3"><span class="text-blue-500 font-bold shrink-0">1.</span> <p>การเข้าเวรจะต้องอยู่ประจำที่โรงพยาบาลเท่านั้น อย่างน้อย 3 ชั่วโมงต่อวัน</p></li>
-                        <li class="flex gap-3"><span class="text-blue-500 font-bold shrink-0">2.</span> <p>แพทย์ต้องเข้าวิทยุสื่อสารทุกครั้งที่เข้าเวร โดยจะใช้ ว.6 ในการปฏิบัติงานและจะใช้ ว.5 ในการพูดคุยเรื่องที่นอกเหนือจากการปฏิบัติหน้าที่ เพื่อลดความวุ่นวายในการสื่อสารขณะปฏิบัติหน้าที่</p></li>
-                        <li class="flex gap-3"><span class="text-blue-500 font-bold shrink-0">3.</span> <p>นักเรียนแพทย์ฝึกหัด (ปลอกชมพู) และแพทย์เวรประจำ จะต้องประจำอยู่ที่โรงพยาบาลเท่านั้น และแพทย์ที่มียศตั้งแต่แพทย์ฝึกหัดขึ้นไปที่ไม่ใช่เวรประจำของตนเอง (แพทย์ Over Time) สามารถอยู่นอกเขตโรงพยาบาลได้ หากมีการขอกำลังเสริม (ว.7) ต้องกลับมาที่โรงพยาบาลทันที และหากมีเหตุจำเป็นให้ทำการแจ้งขออนุญาตจากหัวหน้าเวร หรือแพทย์ที่มีตำแหน่งสูงที่สุด ณ เวลานั้น</p></li>
-                        <li class="flex gap-3"><span class="text-blue-500 font-bold shrink-0">4.</span> <p>หากมีการประกาศสตอรี่ทะเลาะวิวาทจากสภา ไม่อนุญาตให้แพทย์ออกเวร ในช่วงเวลา <span class="bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded text-xs cursor-pointer hover:bg-yellow-500/40" title="คลิกเพื่อแก้ไขในโค้ด">[แก้ตามความเป็นจริง]</span> น.</p></li>
-                        <li class="flex gap-3"><span class="text-blue-500 font-bold shrink-0">5.</span> <p>ไม่อนุญาตให้แพทย์ฝึกหัด (ปลอกชมพู) ทำการออกเวรและลาพักร้อนทุกกรณี เมื่ออยู่ในประเทศจะต้องทำการเข้าเวรเท่านั้น</p></li>
-                    </ul>
-                </div>
-
-                <!-- พื้นที่ทั่วไป -->
-                <div class="glass-panel p-5 rounded-xl border-l-4 border-emerald-500 shadow-lg">
-                    <h3 class="text-md font-bold text-emerald-400 mb-3">📍 เคสพื้นที่ทั่วไป</h3>
-                    <ul class="space-y-2 text-sm text-slate-400">
-                        <li>1. ชุบชีวิตพร้อมใส่บิลตามพื้นที่ปกติ (ยกเว้นในกรณีต่าง ๆ ที่ปฏิบัติผิดกฎ ที่จะมีการใส่บิลเพิ่ม)</li>
-                        <li>2. สามารถฉีดยาได้ปกติ (หากแพทย์สอบถามแล้วคนไข้ไม่ตอบ จะไม่ทำการฉีดยาให้)</li>
-                    </ul>
-                </div>
+            <!-- Navigation Links -->
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+                <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 mt-2">Main Menu</p>
+                <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-r-lg text-slate-400 text-sm text-left" data-target="director-info">
+                    <i class="fa-solid fa-house w-5 text-center"></i> หน้าหลัก (Home)
+                </button>
+                <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-r-lg text-slate-400 text-sm text-left" data-target="hospital-rules">
+                    <i class="fa-solid fa-book-medical w-5 text-center"></i> กฎโรงพยาบาล
+                </button>
+                <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-r-lg text-slate-400 text-sm text-left" data-target="blacklist">
+                    <i class="fa-solid fa-triangle-exclamation w-5 text-center"></i> แบล็คลิสต์ (Blacklist)
+                </button>
+                <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-r-lg text-slate-400 text-sm text-left" data-target="workflow">
+                    <i class="fa-solid fa-list-check w-5 text-center"></i> ขั้นตอนการทำงาน
+                </button>
+                <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-r-lg text-slate-400 text-sm text-left" data-target="pricing">
+                    <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i> อัตราค่ารักษา
+                </button>
                 
-                <!-- พื้นที่ไร้กฎหมาย -->
-                <div class="glass-panel p-5 rounded-xl border-l-4 border-red-500 shadow-lg">
-                    <h3 class="text-md font-bold text-red-400 mb-3">🏴‍☠️ เคสพื้นที่ไร้กฎหมาย</h3>
-                    <ul class="space-y-2 text-sm text-slate-400">
-                        <li>1. ต้องดูสถานการณ์ก่อนว่าปลอดภัยหรือไม่ หากปลอดภัยแพทย์สามารถเข้าไปชุุบชีวิตได้ และใส่บิลตามพื้นที่ หากไม่ปกติ ให้รอเหตุการณ์นั้น ๆ ให้สลบลงก่อน หรือเรียกตำรวจมาช่วยเปิดพื้นที่เคอร์ฟิวเพื่อขอศพมาชุบ</li>
-                        <li class="text-red-400 font-medium">2. ไม่สามารถฉีดยาได้</li>
-                    </ul>
-                </div>
+                <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 mt-6">Staff Only</p>
+                <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-r-lg text-slate-400 text-sm text-left" data-target="doctor-rules">
+                    <i class="fa-solid fa-user-doctor w-5 text-center"></i> วินัยแพทย์
+                </button>
+                <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-r-lg text-slate-400 text-sm text-left" data-target="hospital-bounds">
+                    <i class="fa-solid fa-map-location-dot w-5 text-center"></i> ขอบเขตพื้นที่
+                </button>
+            </nav>
 
-                <!-- พื้นที่คุก -->
-                <div class="glass-panel p-5 rounded-xl border-l-4 border-orange-500 shadow-lg">
-                    <h3 class="text-md font-bold text-orange-400 mb-3">⛓️ เคสพื้นที่คุก</h3>
-                    <ul class="space-y-2 text-sm text-slate-400">
-                        <li>1. หากพื้นที่ปลอดภัย สามารถชุบได้เลย หากพื้นที่ไม่ปลอดภัย ให้แพทย์เจ้าของเคสอุ้มคนสลบขึ้นรถหรือฮอแล้วนำไปชุบบริเวณอื่นที่ปลอดภัยภายใน "คุก" ได้เลย</li>
-                        <li>2. หากเป็นพื้นที่บริเวณคุก หรือผู้สลบสวมใส่ชุดนักโทษ แพทย์จะเข้าวอบอก ตร. ให้มาร่วมดำเนินคดี แต่หากไม่มีตร. แพทย์จะนำไปชุบที่ สน.</li>
-                        <li class="text-red-400 font-medium">3. ไม่สามารถฉีดยาได้</li>
-                    </ul>
-                </div>
-
-                <!-- พื้นที่สุ่มเสี่ยง -->
-                <div class="glass-panel p-5 rounded-xl border-l-4 border-purple-500 shadow-lg">
-                    <h3 class="text-md font-bold text-purple-400 mb-3">⚠️ เคสพื้นที่สุ่มเสี่ยง (งานดำ)</h3>
-                    <ul class="space-y-2 text-sm text-slate-400">
-                        <li>1. เมื่อถึงพื้นที่เคส ให้แพทย์ที่รับเคส เข้าวอขอความช่วยเหลือ ตร. ให้มายังพื้นที่เคสนั้น หากไม่มี ตร.มา สามารถชุบได้เลย</li>
-                        <li class="text-red-400 font-medium">2. ไม่สามารถฉีดยาได้</li>
-                    </ul>
-                </div>
-
-                <!-- เคสทะเลาะวิวาท -->
-                <div class="glass-panel p-5 rounded-xl border-l-4 border-yellow-500 md:col-span-2 shadow-lg bg-yellow-900/10">
-                    <h3 class="text-md font-bold text-yellow-400 mb-3">⚔️ เคสทะเลาะวิวาท (สตอรี่เถื่อน)</h3>
-                    <ul class="space-y-2 text-sm text-slate-400">
-                        <li>1. แพทย์จะอยู่บนรถรอจนเหตุการณ์สงบลง แพทย์จึงจะเปิดไซเรนและเคอร์ฟิวรวมถึงประกาศให้ออกจากพื้นที่ เพื่อทำการเข้าพื้นที่ไปขอศพ</li>
-                        <li>2. ในระหว่างเปิดวงเคอร์ฟิว หากมีผู้ฝ่าฝืน ก่อกวน ขัดขวางการทำงานแพทย์ แพทย์จะทำการ Blacklist ทันที</li>
-                        <li>3. นำผู้สลบทุกคนกลับมาชุบที่โรงพยาบาลที่ใกล้ที่สุด</li>
-                    </ul>
+            <!-- User Status Footer -->
+            <div class="p-4 border-t border-slate-800/60 bg-slate-900/40 flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]"></div>
+                <div class="text-xs text-slate-400">
+                    <p>Status: <span class="text-emerald-400">System Online</span></p>
+                    <p class="mt-0.5 opacity-60">WMC Server v2.4.1</p>
                 </div>
             </div>
-        </section>
+        </aside>
 
-        <!-- ==========================================
-             TAB 4: อัตราค่ารักษา
-        =========================================== -->
-        <section id="pricing" class="tab-content hidden">
-            <div class="flex items-center gap-3 mb-6 border-b border-yellow-900/50 pb-4">
-                <div class="h-6 w-2 bg-yellow-500 rounded-full shadow-[0_0_8px_rgba(234,179,8,0.8)]"></div>
-                <h2 class="text-2xl font-bold text-yellow-400">อัตราค่ารักษา (Pricing)</h2>
-            </div>
+        <!-- Overlay for mobile sidebar -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Main Content Wrapper -->
+        <div class="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
             
-            <div class="glass-panel rounded-xl overflow-hidden shadow-xl max-w-4xl mx-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-[#1e293b] text-yellow-300 uppercase text-xs tracking-wider border-b border-slate-700">
-                            <th class="p-4 font-semibold w-16 text-center">#</th>
-                            <th class="p-4 font-semibold">รายการ (Service)</th>
-                            <th class="p-4 font-semibold text-right w-48">ราคา ($)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-800 text-sm md:text-base">
-                        <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center text-slate-500">1</td><td class="p-4 text-white">CPR เขตโรงพยาบาล และ ในเมือง</td><td class="p-4 text-right font-mono text-yellow-400">3,000</td></tr>
-                        <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center text-slate-500">2</td><td class="p-4 text-white">CPR เขตนอกเมือง</td><td class="p-4 text-right font-mono text-yellow-400">4,000</td></tr>
-                        <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center text-slate-500">3</td><td class="p-4 text-white">CPR เขตเมืองบน</td><td class="p-4 text-right font-mono text-yellow-400">5,000</td></tr>
-                        <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center text-slate-500">4</td><td class="p-4 text-white">CPR พื้นที่เข้าถึงยาก เช่น บนเขา , น้ำลึก , ใต้อุโมงค์</td><td class="p-4 text-right font-mono text-yellow-400">7,000</td></tr>
-                        <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center text-slate-500">5</td><td class="p-4 text-white">CPR เขตพื้นที่สุ่มเสี่ยง ( บริเวณรอบพื้นที่ทำงานดำ , คุก )</td><td class="p-4 text-right font-mono text-yellow-400">6,000</td></tr>
-                        <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center text-slate-500">6</td><td class="p-4 text-white">CPR เขตพื้ื้นที่ไร้กฎหมาย ( เรเบล )</td><td class="p-4 text-right font-mono text-yellow-400">6,000</td></tr>
-                        <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center text-slate-500">7</td><td class="p-4 text-white">ฉีดยา</td><td class="p-4 text-right font-mono text-yellow-400">2,500</td></tr>
-                        <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center text-slate-500">8</td><td class="p-4 text-white">เสาฉีดยา</td><td class="p-4 text-right font-mono text-yellow-400">2,500</td></tr>
+            <!-- Mobile Header / Topbar -->
+            <header class="md:hidden glass-panel border-x-0 border-t-0 flex items-center justify-between p-4 z-20">
+                <div class="flex items-center gap-3">
+                    <img src="WindMedic-removebg-preview.png" alt="Logo" class="h-8">
+                    <h1 class="text-sm font-bold text-white uppercase tracking-wider">Wind Medical</h1>
+                </div>
+                <button id="mobile-menu-btn" class="text-slate-300 hover:text-white p-2">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </header>
+
+            <!-- Scrollable Content Area -->
+            <main id="main-content" class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 scroll-smooth">
+                <div class="max-w-6xl mx-auto">
+
+                    <!-- ==========================================
+                         TAB 0: หน้าแรก
+                    =========================================== -->
+                    <section id="director-info" class="tab-content hidden">
+                        <div class="glass-panel rounded-2xl border border-slate-800/80 p-8 md:p-12 flex flex-col items-center justify-center min-h-[70vh] shadow-2xl relative overflow-hidden">
+                            <!-- Decorative background elements -->
+                            <div class="absolute top-0 right-0 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                            <div class="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+                            
+                            <div class="h-64 sm:h-80 md:h-96 w-auto mb-8 relative z-10">
+                                <img src="chucky-wind-mockup.png" alt="Chucky Wind" class="h-full w-auto object-contain drop-shadow-2xl">
+                            </div>
+                            <h2 class="text-3xl md:text-5xl font-bold text-white mb-2 tracking-wider z-10">Chucky Wind</h2>
+                            <p class="text-sky-400 font-medium tracking-widest uppercase text-sm md:text-base mb-8 z-10">Director of Medical Center</p>
+                            
+                            <div class="w-16 h-1 bg-slate-700 rounded-full mb-8 z-10"></div>
+                            
+                            <p class="text-slate-400 italic text-center max-w-lg leading-relaxed z-10">
+                                "พัดความเจ็บปวดให้ปลิวไป<br>ด้วยความไวของแพทย์ Wind City"
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- ==========================================
+                         TAB 1: กฎโรงพยาบาล
+                    =========================================== -->
+                    <section id="hospital-rules" class="tab-content hidden">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold text-white tracking-wide flex items-center gap-3">
+                                <i class="fa-solid fa-file-contract text-sky-500"></i> ข้อควรปฏิบัติสำหรับประชาชน
+                            </h2>
+                            <p class="text-slate-500 text-sm mt-1 ml-9">กฎการใช้บริการโรงพยาบาลเมื่อมาใช้บริการ</p>
+                        </div>
                         
-                        <!-- เงื่อนไขพิเศษ -->
-                        <tr class="bg-blue-900/10"><td class="p-3 text-center text-blue-400 font-bold">9</td><td colspan="2" class="p-3 text-blue-200 text-sm">ผู้เล่นใหม่บิลจะถูกหักเองอัตโนมัติทั้งชุบและฉีด (เมื่อมีบัตรผู้เล่นใหม่ในตัว)</td></tr>
-                        <tr class="bg-blue-900/10"><td class="p-3 text-center text-blue-400 font-bold">10</td><td class="p-3 text-white text-sm">เคสเคลื่อนที่ x3 จากจุดแรกที่ได้รับเคส</td><td class="p-3 text-right text-orange-400 font-bold text-sm">x3 <span class="block font-normal text-[10px] text-slate-400">ตามพื้นที่ที่ค่ารักษาเยอะที่สุด</span></td></tr>
-                        <tr class="bg-blue-900/10"><td class="p-3 text-center text-blue-400 font-bold">11</td><td class="p-3 text-white text-sm">เคสที่ชุบกันเองหรือฝ่ายอื่นชุบให้ หรือชุบต่อหน้าแพทย์ (แพทย์ถึงจุดแล้ว ไม่มีการแจ้งใด ๆ)</td><td class="p-3 text-right text-orange-400 font-bold text-sm">ปรับใส่บิล x3<span class="block font-normal text-[10px] text-slate-400">จากพื้นที่เคสนั้นๆ แม้จะไม่ได้ทำการรักษา</span></td></tr>
-                        <tr class="bg-emerald-900/20"><td class="p-3 text-center text-emerald-400 font-bold">12</td><td colspan="2" class="p-3 text-emerald-300 text-sm"><span class="font-semibold">หน่วยงานคิด 50% (สตอรี่ชุบฟรี)</span> - ลด 50% ทุกกรณี</td></tr>
-                        <tr class="bg-emerald-900/20"><td class="p-3 text-center text-emerald-400 font-bold">13</td><td colspan="2" class="p-3 text-emerald-300 text-sm"><span class="font-semibold">มีบัตรผู้เล่นใหม่ คิด 50%</span> - ลด 50% เฉพาะเคสปกติ</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+                        <div class="glass-panel border-l-2 border-sky-500 p-4 mb-6 rounded-r-lg flex items-start gap-4">
+                            <i class="fa-solid fa-circle-info text-sky-400 mt-1"></i>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                <strong class="text-white font-medium">ประกาศสำคัญ:</strong> "การตัดสินใจของผู้อำนวยการโรงพยาบาลถือเป็นที่สิ้นสุดและค่าปรับทุกกรณีเข้าโรงพยาบาล ไม่เข้าบุคคลใดบุคคลหนึ่ง"
+                            </p>
+                        </div>
 
-        <!-- ==========================================
-             TAB 5: กฎและวินัยแพทย์ (แก้ไขเป็นตารางแล้ว)
-        =========================================== -->
-        <section id="doctor-rules" class="tab-content hidden">
-            <div class="flex items-center gap-3 mb-6 border-b border-indigo-900/50 pb-4">
-                <div class="h-6 w-2 bg-indigo-500 rounded-full shadow-[0_0_8px_rgba(99,102,241,0.8)]"></div>
-                <h2 class="text-2xl font-bold text-indigo-400">กฎข้อบังคับและวินัยของบุคลากรทางการแพทย์</h2>
-            </div>
-            
-            <div class="glass-panel rounded-xl overflow-hidden shadow-xl mb-6">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-[#1e293b] text-indigo-300 uppercase text-xs tracking-wider border-b border-slate-700">
-                                <th class="p-4 font-semibold w-16 text-center">ข้อ</th>
-                                <th class="p-4 font-semibold">รายละเอียด</th>
-                                <th class="p-4 font-semibold w-56 text-center">บทลงโทษ</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-800 text-sm">
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">1</td><td class="p-4">แพทย์ไม่สามารถบอกข้อมูลภายในให้กับบุคคลภายนอกรับรู้ได้</td><td class="p-4 text-center text-indigo-300">ลงโทษตามดุลยพินิจ ผอ.</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">2</td><td class="p-4">ห้ามเป็นแพทย์ดำ (ช่วยเหลือ / เอื้อผลประโยชน์ / ยุ่งเกี่ยวกับแก๊งหรือครอบครัว / บอก GPS / เป็นท่อเลี้ยงให้แก๊งหรือครอบครัว นำของจากโรงพยาบาลไปให้ผู้อื่น)</td><td class="p-4 text-center"><span class="bg-red-500/20 text-red-400 border border-red-500/50 px-2 py-1 rounded text-xs font-semibold whitespace-nowrap">ปลดทันที</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">3</td><td class="p-4">แพทย์เป็นกลางรักษาทุกคน โดยเรียงลำดับการรักษาดังนี้: แพทย์ > ตำรวจ > ประชาชน</td><td class="p-4 text-center font-mono text-red-400">200,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">4</td><td class="p-4">แพทย์ต้องรักชีวิตตัวเอง หากเจอสถานการณ์ที่เสี่ยงอันตราย ให้แจ้งในวอทุกครั้ง หากแพทย์สลบให้ทำการแจ้งในนิตยสารประเทศ</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">5</td><td class="p-4">แพทย์ต้องมีมนุษยสัมพันธ์ที่ดี พูดจาสุภาพ เคารพ ให้เกียรติ และเข้ากับผู้อื่นได้</td><td class="p-4 text-center text-indigo-300">ลงโทษตามดุลยพินิจ ผอ.</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">6</td><td class="p-4">ห้ามใส่ชุดแพทย์ขณะออกเวร</td><td class="p-4 text-center font-mono text-red-400">200,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">7</td><td class="p-4">แพทย์ห้ามกระทำการก่ออาชญากรรม (ปล้น ฆาตกรรม)</td><td class="p-4 text-center"><span class="bg-red-500/20 text-red-400 border border-red-500/50 px-2 py-1 rounded text-xs font-semibold whitespace-nowrap">ปลดทันที</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">8</td><td class="p-4">ขณะเข้าเวร ต้องแต่งกายด้วยเครื่องแบบแพทย์ให้เหมาะสม ( เครื่องแบบแพทย์ + ปลอกแขน + ถุงมือสีฟ้า ) ยกเว้นวันศุกร์ - เสาร์ - อาทิตย์ สามารถใส่ชุดลำลองใดก็ได้ แต่ต้องมีปลอกแขนและถุงมือด้วยทุกครั้ง</td><td class="p-4 text-center font-mono text-red-400">200,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">9</td><td class="p-4">ขณะเข้าเวร ต้องมีความพร้อมในการปฏิบัติงานตลอดเวลา ห้ามเหม่อเกินระยะเวลาที่กำหนดหรือนอกพื้นที่ที่กำหนด ต้องประจำการที่โรงพยาบาลตลอด หากมีเหตุฉุกเฉินต้องแจ้งทุกครั้ง</td><td class="p-4 text-center font-mono text-red-400">300,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">10</td><td class="p-4">ขณะเข้าเวร ห้ามแพทย์ทำร้ายกันต่อหน้าประชาชน</td><td class="p-4 text-center font-mono text-red-400">500,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">11</td><td class="p-4">ขณะออกเวร ห้ามใช้อุปกรณ์ที่เกี่ยวกับหน่วยงานแพทย์ (หรือเข้าเวรเข้า ๆ ออกๆ เพื่อผลประโยชน์ส่วนตน เช่น เพื่อเพิ่มเลือด / กินMRE / ซ่อมรถ)</td><td class="p-4 text-center font-mono text-red-400">1,000,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">12</td><td class="p-4">ขณะสวมเครื่องแบบแพทย์และอยู่ในเวลางาน (On Duty) ห้ามแพทย์ซื้อ-ขาย แลกเปลี่ยน สิ่งของผิดกฎหมายทุกชนิด</td><td class="p-4 text-center"><span class="text-orange-400 text-xs">ปรับ X5 ของที่ซื้อขาย<br>และให้ตำรวจดำเนินคดี</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">13</td><td class="p-4">ช่วงเวลาพีคไทม์ <span class="bg-yellow-500/20 text-yellow-300 px-1 rounded text-xs mx-1 cursor-pointer" title="คลิกเพื่อแก้ไข">[แก้ตามความเป็นจริง]</span> ห้ามออกเวรเด็ดขาด หากแพทย์ถึง 8 คน หากพบเจอในประเทศ จะทำการปรับตามสมควร</td><td class="p-4 text-center font-mono text-red-400">300,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">14</td><td class="p-4">ห้ามขโมยของในตู้เซฟ</td><td class="p-4 text-center"><span class="bg-red-500/20 text-red-400 border border-red-500/50 px-2 py-1 rounded text-xs font-semibold block mb-1">ปลดทันที</span><span class="text-[10px] text-slate-400">พร้อมรีตัว(หน่วยงานดำ)</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">15</td><td class="p-4">แพทย์ต้องเข้าประชุมทุกครั้ง หากขาดประชุมต้องแจ้งลาอย่างน้อย 1 ชั่วโมงก่อนถึงเวลาเริ่มการประชุม</td><td class="p-4 text-center font-mono text-red-400">100,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">16</td><td class="p-4">เหม่อได้ไม่เกิน 15 นาที และต้องแจ้งในวิทยุสื่อสารทุกครั้ง (ถ้าเกิน 15 นาที ต้องออกเวรเท่านั้น )</td><td class="p-4 text-center font-mono text-red-400">100,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">17</td><td class="p-4">เข้าเวรวันละ 3 ชั่วโมง</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">18</td><td class="p-4">เข้าเวรหลักอย่างน้อย 21 ชั่วโมง จึงจะออกเวรภายในเมืองได้</td><td class="p-4 text-center font-mono text-red-400">300,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">19</td><td class="p-4">เข้าเวรหลักอย่างน้อย 40 ชั่วโมง จึงจะสามารถพักร้อนได้</td><td class="p-4 text-center font-mono text-red-400">500,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">20</td><td class="p-4">สามารถลาพักร้อนได้สูงสุด 7 วัน ต่อเดือน โดยมีเงื่อนไขในการลาพักร้อน</td><td class="p-4 text-center text-slate-600">-</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">21</td><td class="p-4">กรณีลาเวรติดต่อกัน 7 วันขึ้นไป</td><td class="p-4 text-center text-indigo-300">ขึ้นอยู่กับดุลยพินิจ ผอ.</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">22</td><td class="p-4">ขาดงาน 5 วัน โดยไม่แจ้งลา</td><td class="p-4 text-center"><span class="bg-red-500/20 text-red-400 border border-red-500/50 px-2 py-1 rounded text-xs font-semibold block mb-1">ปลดจากแพทย์ทันที</span><span class="text-[10px] text-slate-400">(พิจารณาจากอายุงาน)</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">23</td><td class="p-4">สัญญาแพทย์ 70 วัน หากเข้าครบ และประสงค์จะออก จะติดคูลดาวน์ 5 วัน หากเข้าไม่ครบ แต่ประสงค์จะออก จะโดนค่าฉีกสัญญา</td><td class="p-4 text-center font-mono text-red-400">5,000,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">24</td><td class="p-4">หากแพทย์เรื้อน ด่า ทำร้ายผู้อื่นก่อน โดยไม่มีสาเหตุ และไม่รู้จักกันมาก่อน จนเกิดการร้องเรียน (หากแพทย์โดนด่าก่อนจะถือว่าไม่ใช่แพทย์เรื้อน จะโดนวินัยข้ออื่นหากด่าสวนตามความผิด)</td><td class="p-4 text-center"><span class="bg-red-500/20 text-red-400 border border-red-500/50 px-2 py-1 rounded text-xs font-semibold whitespace-nowrap">ปลดจากแพทย์ทันที</span></td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">25</td><td class="p-4">หากนอกช่วงเวลาพีคไทม์ มีเหตุให้ต้องเรียกตัวกลับเข้าเวร ต้องกลับเข้าเวรทันที หากเรียกตัวแล้วเกิน 15 นาที ยังไม่กลับมาเข้าเวร จะทำการปรับทันที</td><td class="p-4 text-center font-mono text-red-400">300,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">26</td><td class="p-4">ขณะเข้าเวรต้องเข้าวอทุกครั้ง</td><td class="p-4 text-center font-mono text-red-400">50,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">27</td><td class="p-4">ต้องใช้พาหนะหน่วยงานในการปฏิบัตหน้าที่ ( การรับเคส ) ทุกครั้ง ไม่ใช้รถส่วนตัวในการรับเคส</td><td class="p-4 text-center font-mono text-red-400">300,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">28</td><td class="p-4">แพทย์ต้องใส่แท็ก นำหน้าชื่อทุกครั้ง</td><td class="p-4 text-center font-mono text-red-400">50,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">29</td><td class="p-4">แพทย์ควรมีบันทึกการทำงานเสมอ</td><td class="p-4 text-center font-mono text-red-400">300,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">30</td><td class="p-4">แพทย์ต้องใส่บิลก่อนทำการรักษาทุกครั้ง และห้ามใส่บิลกันเล่นเด็ดขาด</td><td class="p-4 text-center font-mono text-red-400">300,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">31</td><td class="p-4">ห้ามอุ้ม หรือตีเล่นกับแก๊งหรือครอบครัวขณะเข้าเวร (หากไม่มีสัญลักษณ์แก๊งหรือครอบครัว ถือว่าอนุโลมได้)</td><td class="p-4 text-center font-mono text-red-400">300,000</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">32</td><td class="p-4">การนำเฮลิคอปเตอร์ออกรับเคส จะทำได้ต่อเมื่อเป็นเคสบนเขา ทางน้ำตื้น/ลึก หรือพื้นที่ที่รถยนต์ไม่สามารถเข้าถึงได้เท่านั้น ห้ามใช้ฮอบินรับเคสในเมืองหากไม่จำเป็น ต้องขึ้นอยู่กับดุลยพินิจแพทย์ยศชำนาญการขึ้นไปหรือยศสูงสุดขณะนั้น (หากเห็นว่าไม่จำเป็นจะลงโทษผู้ที่อนุญาตตามสมควร)</td><td class="p-4 text-center text-indigo-300">ลงโทษตามดุลยพินิจ ผอ.</td></tr>
-                            <tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 text-center font-bold text-slate-500">33</td><td class="p-4">แพทย์ต้องไม่ปฏิเสธเคส</td><td class="p-4 text-center font-mono text-red-400">300,000</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="mt-4 p-4 bg-indigo-950/40 border-l-4 border-indigo-500 text-sm text-indigo-300 rounded-r-lg shadow-md">
-                <span class="font-bold text-white">หมายเหตุ :</span> กฎทุกอย่างอาจมีการเปลี่ยนแปลงตามความเหมาะสมตามดุลยพินิจของ ผอ.
-            </div>
-        </section>
+                        <div class="glass-panel rounded-xl overflow-hidden border border-slate-800/80">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-900/90 text-slate-400 text-xs tracking-wider border-b border-slate-800">
+                                            <th class="p-4 font-medium w-16 text-center">ข้อ</th>
+                                            <th class="p-4 font-medium">รายละเอียด</th>
+                                            <th class="p-4 font-medium w-48 text-center">บทลงโทษ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800/50 text-sm">
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">01</td><td class="p-4 text-slate-300">อ่าน "กฎการใช้บริการโรงพยาบาล" และ "กฎแบล็คลิสต์" ให้ถี่ถ้วน หากกระทำความผิดและไม่ยอมจ่ายค่าปรับ หรือไม่ยอมให้แพทย์ใส่บิล ทางโรงพยาบาลจะทำการแบล็คลิสต์ทุกกรณีจนกว่าจะมาติดต่อกับทางโรงพยาบาล</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">02</td><td class="p-4 text-slate-300">เขตโรงพยาบาลเป็นพื้นที่ของแพทย์ เขตโรงพยาบาลมีข้อห้ามตามกฎ โดยรวมทั้งบริเวณภายในอาคารและนอกอาคารที่มีลานจอดรถสำหรับโรงพยาบาล</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">03</td><td class="p-4 text-slate-300">โรงพยาบาลไม่สามารถเป็นที่พักพิงให้กับครอบครัว แก๊ง หรือประชาชนได้ หากรักษาตัวเรียบร้อยแล้ว ต้องออกจากโรงพยาบาลทันที ( เตือน 1 ครั้ง หากเตือนแล้วยังอยู่ จะทำการ Blacklist ทันที )</td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-10')" class="badge-red">Blacklist ข้อ 10</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">04</td><td class="p-4 text-slate-300">หากประชาชนเหม่อจนสลบ แพทย์จะทำการรักษาเรื่อย ๆ ( คิดบิลราคาปกติ ไม่ฉีดยา ) หากของหายทาง รพ. จะไม่รับผิดชอบทุกกรณี</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">05</td><td class="p-4 text-slate-300">ผู้ใช้บริการโรงพยาบาลต้องเก็บรถทุกครั้งก่อนเข้าใช้บริการโรงพยาบาล หากมีการกีดขวางทางเดินรถ ทางเข้า-ออก ของโรงพยาบาล พบเห็นจะปรับเจ้าของรถหรือบุคคลที่เกี่ยวข้องกับรถคันนั้น 1 คน</td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-22')" class="badge-red">Blacklist ข้อ 22</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">06</td><td class="p-4 text-slate-300">การทะเลาะวิวาทในเขตพื้นที่โรงพยาบาล ทั้งทางวาจาหรือกาย ไม่ว่าฝ่ายใดจะเริ่มก่อน หากมีการตอบโต้กัน แพทย์จะ Blacklist ทั้งคู่ทันที</td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-5')" class="badge-red">Blacklist ข้อ 5</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">07</td><td class="p-4 text-slate-300">ห้ามพยายามขโมยหรือขโมยยานพาหนะแพทย์</td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-7')" class="badge-red">Blacklist ข้อ 7</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">08</td><td class="p-4 text-slate-300">ห้ามทำร้ายร่างกายแพทย์จนสลบหรือไม่สลบ มีโทษตามกฎประเทศ ไม่ว่าจะเจตนาหรือไม่ก็ตาม ( รวมถึงในพื้นที่ไร้กฎหมาย )</td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-12')" class="badge-red mb-1">Blacklist 12,13,14</button><br><span class="text-[10px] text-slate-500">และโดนกฎประเทศ</span></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">09</td><td class="p-4 text-slate-300">หากกดเรียกเคสแพทย์ ห้ามทำการเคลื่อนย้ายศพเด็ดขาด ( รวมถึงย้ายศพมา รพ. เช่นกัน ) ต้องแจ้งแพทย์ผ่านทวิตทุกครั้ง ก่อนแพทย์จะเข้าถึงพื้นที่</td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-21')" class="badge-red">Blacklist ข้อ 21</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">10</td><td class="p-4 text-slate-300">หากเรียกเคสแล้วแต่มีผู้ชุบชีวิตให้ก่อน หรือชุบชีวิตกันเอง โดยที่แพทย์ถึงพื้นที่แล้ว แต่ไม่ได้ทวิตบอก</td><td class="p-4 text-center"><button onclick="window.goToRule('pricing', 'pr-11')" class="badge-amber">อัตราค่ารักษา ข้อ 11</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">11</td><td class="p-4 text-slate-300">แพทย์จะให้การรักษาที่โรงพยาบาลแห่งใดก็ได้ขึ้นอยู่กับดุลยพินิจแพทย์ เมื่อแพทย์พบเห็นผู้สลบอยู่ภายในเขตพื้นที่ของโรงพยาบาล แพทย์จะทำการขอศพเพื่อทำการรักษาทันที</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">12</td><td class="p-4 text-slate-300">เมื่อเข้ารับการรักษาที่โรงพยาบาลให้ถอดสิ่งปกปิดใบหน้าออกทุกครั้ง ( ทั้งครึ่งหน้าและเต็มใบหน้า ) ห้ามปิดบังใบหน้า
+                                            <ul class="list-disc ml-5 mt-2 space-y-1 text-slate-400">
+                                                <li><span class="text-slate-300">หน้ากาก "เต็มใบ":</span> แพทย์จะทำการขอให้ถอดหน้ากาก หากไม่ถอดจะไม่ส่งรักษา (ส่งนอนเตียง/ฉีดยา) ทุกกรณี</li>
+                                                <li><span class="text-slate-300">หน้ากาก "ครึ่งใบ" / "ผ้าปิดปาก" หรือ "เจตนาปกปิดอัตลักษณ์":</span> แพทย์จะขอให้ถอด หรือขอดูบัตรประชาชน หากไม่ให้ความร่วมมือจะไม่ส่งรักษา ทุกกรณี <br><span class="text-slate-500 text-xs">(ยกเว้นคนไข้ที่สลบ แพทย์จะทำการรักษาก่อน และจะขอให้ถอดหน้ากาก)</span></li>
+                                            </ul>
+                                        </td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-2')" class="badge-red">Blacklist ข้อ 2</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">13</td><td class="p-4 text-slate-300">เมื่ออยู่ในเขต รพ. ห้ามก่อความวุ่นวาย ห้ามส่งเสียงรบกวนผู้อื่นหรือแพทย์ ห้ามบลัฟ ห้ามต่อยตีเล่น ห้ามปล้น หรือห้ามทำร้ายร่างกายกันเด็ดขาด</td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-5')" class="badge-red">Blacklist ข้อ 5</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">14</td><td class="p-4 text-slate-300">ห้ามนำยานพาหนะทุกชนิดรวมถึงสเก็ตบอร์ด ขับเข้าในพื้นที่อาคารโรงพยาบาล รวมถึงขึ้นฟุตบาตหน้าอาคาร</td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-3')" class="badge-red">Blacklist ข้อ 3</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">15</td><td class="p-4 text-slate-300">หากแพทย์ได้รับเคสจากสถานที่เดิมและจากคนเดิม 3 ครั้งขึ้นไป แพทย์จะตีเป็นการทะเลาะวิวาททันที ต้องเรียกตำรวจมาช่วยระงับเหตุ</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">16</td><td class="p-4 text-slate-300">ห้ามควักอาวุธ บั๊มรถ เผารถ ราดน้ำมัน หรือเหยียบศพ ในเขตพื้นที่โรงพยาบาล</td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-8')" class="badge-red">Blacklist ข้อ 8</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">17</td><td class="p-4 text-slate-300">หากมีการทำร้ายร่างกายภายในเขตของโรงพยาบาล โดยไม่ได้อยู่ในสายตาแพทย์ หากมีหลักฐานสามารถติดต่อแพทย์เพื่อแบล็คลิสต์ได้ทันที ( ต้องมีหลักฐานประกอบ )</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">18</td><td class="p-4 text-slate-300">หากผู้สลบไม่ได้ทำการกดเรียกเคส แพทย์จะไม่ทำการรักษาให้ทุกกรณี ยกเว้นในกรณีที่มีผู้สลบในระยะสายตาแพทย์ แพทย์จะทำการรักษาให้</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">19</td><td class="p-4 text-slate-300">หากก่อเหตุในเขตโรงพยาบาลหรือหน้าแพทย์ แพทย์สามารถทำการ Blacklist ผู้ก่อเหตุได้ทันทีโดยไม่จำเป็นต้องมีหลักฐาน สายตาแพทย์ถือเป็นที่สิ้นสุด</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">20</td><td class="p-4 text-slate-300">เคสกิจกรรมที่แพทย์ไม่สามารถเข้าถึงได้ หากกดเรียกเคสมา แพทย์จะทำการประกาศเตือน 1 ครั้ง ต่อการกดเรียกเคส 1 ครั้ง หากคนเดิมกดครบ 3 ครั้ง จะทำการแบล็คลิสต์ทันที</td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-15')" class="badge-red">Blacklist ข้อ 15</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">21</td><td class="p-4 text-slate-300">ในพื้นที่เคส หากมีสตอรี แพทย์จะปฏิบัติงานตามปกติ แต่ผู้ที่มีสตอรี่ ไม่สามารถนำหลักฐานจากแพทย์หรือนำแพทย์ไปอ้างอิงได้</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">22</td><td class="p-4 text-slate-300">ในพื้นที่โรงพยาบาล แพทย์สามารถตรวจบัตรประชาชนได้ทุกคนโดยไม่ต้องขออนุญาต</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">23</td><td class="p-4 text-slate-300">หากในพื้นที่เคส มีผู้สลบที่เป็นทั้งหน่วยงานและประชาชน แก๊ง หรือ ครอบครัว แพทย์จะทำการชุบหน่วยงานก่อนทุกกรณี</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">24</td><td class="p-4 text-slate-300">หลังแพทย์ชุบและรักษา หากผู้สลบไม่มีรถ แพทย์สามารถไปส่งการาจ หรือ พาวด์ที่ใกล้ที่สุดได้ ( ไม่รับส่งแก๊งหรือครอบครัวทุกกรณี ) หากมีแพทย์ไปส่งแก๊งหรือครอบครัว จะถูกลงวินัยแพทย์</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">25</td><td class="p-4 text-slate-300">ห้ามใช้พื้นที่ภายในและบริเวณรอบโรงพยาบาล เป็นจุดนัดพบเพื่อเจรจา ซื้อ-ขาย หรือส่งมอบ สิ่งของผิดกฎหมายทุกชนิด หากแพทย์พบเห็นหรือมีเหตุต้องสงสัย แพทย์มีสิทธิ์แจ้งเจ้าหน้าที่ตำรวจเข้าตรวจค้นทันที</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">26</td><td class="p-4 text-slate-300">ห้ามประชาชนสวมใส่ชุดหรือเครื่องแบบแพทย์เด็ดขาด</td><td class="p-4 text-center"><button onclick="window.goToRule('blacklist', 'bl-17')" class="badge-red">Blacklist ข้อ 17</button></td></tr>
+                                        <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">27</td><td class="p-4 text-slate-300">ทุกช่องโหว่ของกฎที่เกี่ยวข้องกับโรงพยาบาลและทุกกฎของโรงพยาบาล การตัดสินใจของ ผอ.แพทย์ ถือเป็นที่สิ้นสุด</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
 
-        <!-- ==========================================
-             TAB 6: ขอบเขตโรงพยาบาล 
-        =========================================== -->
-        <section id="hospital-bounds" class="tab-content hidden">
-            <div class="flex items-center gap-3 mb-6 border-b border-cyan-900/50 pb-4">
-                <div class="h-6 w-2 bg-cyan-500 rounded-full shadow-[0_0_8px_rgba(6,182,212,0.8)]"></div>
-                <h2 class="text-2xl font-bold text-cyan-400">ขอบเขตโรงพยาบาล (Hospital Boundary)</h2>
-            </div>
-            
-            <div class="bg-cyan-950/30 border border-cyan-800/50 rounded-lg p-4 mb-8 text-cyan-200 text-sm md:text-base text-center">
-                <p>พื้นที่ทั้งหมดที่แสดงในภาพถือเป็นเขตรับผิดชอบของโรงพยาบาล ซึ่งอยู่ภายใต้กฎระเบียบและข้อบังคับของโรงพยาบาลอย่างเคร่งครัด</p>
-            </div>
+                    <!-- ==========================================
+                         TAB 2: BLACKLIST
+                    =========================================== -->
+                    <section id="blacklist" class="tab-content hidden">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold text-white tracking-wide flex items-center gap-3">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> ระเบียบ BLACKLIST
+                            </h2>
+                            <p class="text-slate-500 text-sm mt-1 ml-9">รายละเอียดบทลงโทษและค่าปรับ</p>
+                        </div>
+                        
+                        <div class="glass-panel border-l-2 border-rose-500 p-5 mb-6 rounded-r-lg text-sm text-slate-300 shadow-md">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong class="text-white">หากไม่เคลียร์ Blacklist:</strong> แพทย์จะไม่รับเคส ไม่ทำการรักษาทุกกรณี จนกว่าจะทำการชำระให้เรียบร้อย</li>
+                                <li><strong class="text-white">หลักฐานอ้างอิง:</strong> สายตาแพทย์ 1 คนขึ้นไป หรือ ภาพถ่าย F12 (ต้องเห็นภาพเต็ม ไม่ตัดภาพ เห็นรายละเอียดชัดเจน ไม่รับวิดีโอ) <span class="text-slate-500 text-xs ml-1">อายุ 24 ชม.</span></li>
+                                <li><strong class="text-white">การแจ้งเอาผิดแพทย์:</strong> ต้องเป็นหลักฐานวิดีโอที่ชัดเจน เต็มจอ</li>
+                                <li><strong class="text-sky-400">สิทธิผู้เล่นใหม่:</strong> ไม่ครอบคลุมถึงค่าปรับ Blacklist ทุกกรณี</li>
+                            </ul>
+                        </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 max-w-5xl mx-auto">
-                <!-- Image 1 -->
-                <div class="glass-panel p-3 md:p-4 rounded-xl border border-cyan-900/30 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.5)] group flex flex-col items-center hover:-translate-y-1 transition-all duration-300">
-                    <div class="aspect-video w-full bg-slate-800 rounded-lg overflow-hidden relative flex items-center justify-center border border-slate-700/50 mb-4">
-                        <!-- เปลี่ยนรูปที่ 1 ตรงนี้ -->
-                        <img src="bound-mockup-1.jpg" alt="โรงพยาบาลหลัก(ในเมือง)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 relative z-10">
-                    </div>
-                    <div class="bg-cyan-900/40 w-full py-2 px-4 rounded text-center border border-cyan-800/50">
-                        <p class="text-cyan-300 font-semibold text-base md:text-lg tracking-wide">โรงพยาบาลหลัก (ในเมือง)</p>
-                    </div>
+                        <div class="glass-panel rounded-xl overflow-hidden shadow-lg border border-slate-800/80">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-900/90 text-slate-400 text-xs tracking-wider border-b border-slate-800">
+                                            <th class="p-4 font-medium w-12 text-center">ข้อ</th>
+                                            <th class="p-4 font-medium">รายละเอียดการกระทำผิด</th>
+                                            <th class="p-4 font-medium w-36 text-right">ค่าปรับ ($)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800/50 text-sm">
+                                        <tr id="bl-10" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">10</td><td class="p-4 text-slate-300">แก๊ง ครอบครัว หรือ ประชาชน ขณะกำลังมีสตอรี่ หากเข้ามาทำการรักษาเสร็จสิ้น ต้องออกจากโรงพยาบาลภายใน 15 นาที (นับเวลาตั้งแต่คนแรกที่เข้ามา)</td><td class="p-4 text-right font-mono text-slate-200">500,000</td></tr>
+                                        <tr id="bl-22" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">22</td><td class="p-4 text-slate-300">ห้ามกีดขวางทางเดินรถ ทางเข้า-ออก ของโรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">500,000</td></tr>
+                                        <tr id="bl-5" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">05</td><td class="p-4 text-slate-300">ทะเลาะวิวาททั้งทางกายหรือวาจา หรือสร้างความรบกวนในเขตพื้นที่โรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">200,000</td></tr>
+                                        <tr id="bl-7" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">07</td><td class="p-4 text-slate-300">ขโมยพาหนะ เผาพาหนะ ราดน้ำมันใส่ ทำลาย หรือก่อความเสียหายแก่ทรัพย์สินของโรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">200,000</td></tr>
+                                        <tr id="bl-12" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">12</td><td class="p-4 text-slate-300">เจตนาหรือไม่เจตนา ทำร้ายร่างกายแพทย์ (ไม่สลบ) นอกเขตโรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">400,000</td></tr>
+                                        <tr id="bl-13" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">13</td><td class="p-4 text-slate-300">เจตนาหรือไม่เจตนา ทำร้ายร่างกายแพทย์จนสลบ ไม่ว่าในหรือนอกเขตโรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">800,000</td></tr>
+                                        <tr id="bl-14" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">14</td><td class="p-4 text-slate-300">เจตนาหรือไม่เจตนา ทำร้ายร่างกายแพทย์ หรือเจ้าหน้าที่หน่วยงานอื่นๆ ในเขตโรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">600,000</td></tr>
+                                        <tr id="bl-21" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">21</td><td class="p-4 text-slate-300">หากกดเรียกแพทย์ (G) และเคลื่อนย้ายเพื่ออำพรางหรืออุ้มทิ้ง หรือมีการเคลื่อนย้ายนำมาส่งโรงพยาบาลหรือฟื้นโดยแพทย์ไม่ได้ทำการ CPR</td><td class="p-4 text-right"><span class="badge-amber">ค่ารักษา x3</span><br><span class="text-[10px] text-slate-500 mt-1 block">ตามพื้นที่ที่ค่ารักษาเยอะที่สุด</span></td></tr>
+                                        <tr id="bl-2" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">02</td><td class="p-4 text-slate-300">ปิดบังใบหน้า / ส่งเสียงดังรบกวน / บลัฟ / ใช้คำพูดไม่สุภาพ หรือพูดจาเหน็บแนม ในเขตพื้นที่โรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">100,000</td></tr>
+                                        <tr id="bl-3" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">03</td><td class="p-4 text-slate-300">การนำยานพาหนะทุกชนิดรวมถึงสเก็ตบอร์ด เข้ามาในพื้นที่อาคารโรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">200,000</td></tr>
+                                        <tr id="bl-8" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">08</td><td class="p-4 text-slate-300">ควักอาวุธ บั้มรถ ราดน้ำมัน เผารถ เหยียบศพ ในเขตพื้นที่โรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">200,000</td></tr>
+                                        <tr id="bl-15" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">15</td><td class="p-4 text-slate-300">เรียกเคสกิจกรรมนอกแมพ ที่แพทย์ไม่สามารถเข้าถึงได้ ตั้้งแต่ 3 ครั้งขึ้นไป</td><td class="p-4 text-right font-mono text-slate-200">100,000</td></tr>
+                                        <tr id="bl-17" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">17</td><td class="p-4 text-slate-300">ห้ามประชาชนสวมใส่เครื่องแบบหรืออุปกรณ์ที่แสดงตนเป็นบุคลากรทางการแพทย์ และห้ามแอบอ้างเป็นหน่วยงานหรือเจ้าหน้าที่ทางการแพทย์โดยเด็ดขาด</td><td class="p-4 text-right font-mono text-slate-200">1,000,000</td></tr>
+                                        <tr id="bl-1" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">01</td><td class="p-4 text-slate-300">เคสเคลื่อนย้ายผู้สลบ อุ้มคาเท้า เคสห่อ/เคสปกติ ไม่ใช่ผู้สลบที่กำลังมีสตอรี่ผ่านสภา (หากแพทย์ขอศพแล้วไม่ให้ศพ จะโดนทันที แต่ถ้าเป็นเคสที่กำลังจะเอาศพขึ้นสภา จะไม่โดน blacklist คิดบิลปกติ)</td><td class="p-4 text-right font-mono text-slate-200">200,000</td></tr>
+                                        <tr id="bl-4" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">04</td><td class="p-4 text-slate-300">ขัดขวางการทำงานของแพทย์ แย่งศพที่อยู่ในการดูแล กักศพไม่ยอมให้ศพ บั้มรถแพทย์ พูดจาดูหมิ่น ปล้น หรือข่มขู่ ทำร้ายร่างกาย/ทะเลาะวิวาทขณะมีแพทย์ในพื้นที่นั้น ๆ</td><td class="p-4 text-right font-mono text-slate-200">300,000</td></tr>
+                                        <tr id="bl-6" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">06</td><td class="p-4 text-slate-300">อุ้มผู้สลบที่ไม่ใช่แก๊งหรือครอบครัวเดียวกัน ออกจากโรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">200,000</td></tr>
+                                        <tr id="bl-9" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">09</td><td class="p-4 text-slate-300">แก๊ง ครอบครัว หรือ ประชาชน ขณะกำลังมีสตอรี่ ที่ถูกแบล็คลิสต์ เข้ามาในเขตโรงพยาบาลเพื่อรับศพคนในแก๊ง แต่แอบชุบเพื่อนในเขตโรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">500,000</td></tr>
+                                        <tr id="bl-11" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">11</td><td class="p-4 text-slate-300">แก๊ง ครอบครัว หรือ ประชาชน ขณะกำลังมีสตอรี่ ห้ามใช้พื้นที่ รพ.เป็นพื้นที่หลบภัย (หากมีสตอรี่ ห้ามลากเข้ามาใน รพ. เด็ดขาด) ยกเว้นเข้ามาซื้อของ ซ่อมรถ หรือกดเงิน</td><td class="p-4 text-right font-mono text-slate-200">500,000</td></tr>
+                                        <tr id="bl-16" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">16</td><td class="p-4 text-slate-300">เคลื่อนย้ายศพ ชุบผู้สลบ หรือกระทำการใด ๆ ก็ตามที่เกี่ยวกับศพ หรีอเป็นการขัดขวาง หรือ ก่อกวนการทำงานแพทย์ภายในวงเคอร์ฟิว ไม่ว่าจะเป็นกลุ่มเดียวกันหรือไม่ก็ตาม</td><td class="p-4 text-right font-mono text-slate-200">300,000</td></tr>
+                                        <tr id="bl-18" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">18</td><td class="p-4 text-slate-300">ห้ามควักหรือแสดงอาวุธต่อหน้าแพทย์ ขณะกำลังรักษาแพทย์ทำการรักษาผู้สลบนอกเขตโรงพยาบาล ขึ้นอยู่กับดุลยพินิจแพทย์</td><td class="p-4 text-right font-mono text-slate-200">200,000</td></tr>
+                                        <tr id="bl-19" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">19</td><td class="p-4 text-slate-300">หากประชาชนฝ่าฝืนหรือไม่ให้ความร่วมมือคำสั่งจากแพทย์หรือประกาศจากโรงพยาบาล</td><td class="p-4 text-right font-mono text-slate-200">300,000</td></tr>
+                                        <tr id="bl-20" class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">20</td><td class="p-4 text-slate-300">ไม่อนุญาตให้ประชาชนหรือหน่วยงานอื่นๆ เข้าห้องที่ไม่ได้รับอนุญาตในโรงพยาบาล ยกเว้น ห้องทำการรักษาและห้องที่ได้รับอนุญาตจากแพทย์</td><td class="p-4 text-right font-mono text-slate-200">200,000</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ==========================================
+                         TAB 3: ขั้นตอนการทำงาน
+                    =========================================== -->
+                    <section id="workflow" class="tab-content hidden">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold text-white tracking-wide flex items-center gap-3">
+                                <i class="fa-solid fa-list-check text-sky-500"></i> ขั้นตอนการปฏิบัติงาน
+                            </h2>
+                            <p class="text-slate-500 text-sm mt-1 ml-9">แนวทางการปฏิบัติของแพทย์ตามพื้นที่ต่างๆ</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                            <!-- Card 1 -->
+                            <div class="glass-panel p-6 rounded-xl border border-slate-800/80 shadow-lg lg:col-span-2 relative overflow-hidden">
+                                <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                                <h3 class="text-base font-semibold text-white mb-4">การทำงานปกติ</h3>
+                                <ul class="space-y-3 text-slate-400 text-sm pl-4">
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">1.</span> การเข้าเวรจะต้องอยู่ประจำที่โรงพยาบาลเท่านั้น อย่างน้อย 3 ชั่วโมงต่อวัน</li>
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">2.</span> แพทย์ต้องเข้าวิทยุสื่อสารทุกครั้งที่เข้าเวร โดยจะใช้ ว.6 ในการปฏิบัติงานและจะใช้ ว.5 ในการพูดคุยเรื่องที่นอกเหนือจากการปฏิบัติหน้าที่ เพื่อลดความวุ่นวายในการสื่อสารขณะปฏิบัติหน้าที่</li>
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">3.</span> นักเรียนแพทย์ฝึกหัด (ปลอกชมพู) และแพทย์เวรประจำ จะต้องประจำอยู่ที่โรงพยาบาลเท่านั้น และแพทย์ที่มียศตั้งแต่แพทย์ฝึกหัดขึ้นไปที่ไม่ใช่เวรประจำของตนเอง (แพทย์ Over Time) สามารถอยู่นอกเขตโรงพยาบาลได้ หากมีการขอกำลังเสริม (ว.7) ต้องกลับมาที่โรงพยาบาลทันที และหากมีเหตุจำเป็นให้ทำการแจ้งขออนุญาตจากหัวหน้าเวร หรือแพทย์ที่มีตำแหน่งสูงที่สุด ณ เวลานั้น</li>
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">4.</span> หากมีการประกาศสตอรี่ทะเลาะวิวาทจากสภา ไม่อนุญาตให้แพทย์ออกเวร ในช่วงเวลา <span class="bg-slate-800 text-slate-300 px-1 rounded border border-slate-700 mx-1">[แก้ตามความเป็นจริง]</span> น.</li>
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">5.</span> ไม่อนุญาตให้แพทย์ฝึกหัด (ปลอกชมพู) ทำการออกเวรและลาพักร้อนทุกกรณี เมื่ออยู่ในประเทศจะต้องทำการเข้าเวรเท่านั้น</li>
+                                </ul>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="glass-panel p-5 rounded-xl border border-slate-800/80 shadow-lg relative overflow-hidden">
+                                <div class="absolute top-0 left-0 w-1 h-full bg-emerald-400"></div>
+                                <h3 class="text-sm font-semibold text-white mb-3">📍 เคสพื้นที่ทั่วไป</h3>
+                                <ul class="space-y-2 text-sm text-slate-400 pl-4">
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">1.</span> ชุบชีวิตพร้อมใส่บิลตามพื้นที่ปกติ (ยกเว้นในกรณีต่าง ๆ ที่ปฏิบัติผิดกฎ ที่จะมีการใส่บิลเพิ่ม)</li>
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">2.</span> สามารถฉีดยาได้ปกติ (หากแพทย์สอบถามแล้วคนไข้ไม่ตอบ จะไม่ทำการฉีดยาให้)</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Card 3 -->
+                            <div class="glass-panel p-5 rounded-xl border border-slate-800/80 shadow-lg relative overflow-hidden">
+                                <div class="absolute top-0 left-0 w-1 h-full bg-rose-400"></div>
+                                <h3 class="text-sm font-semibold text-white mb-3">🏴‍☠️ เคสพื้นที่ไร้กฎหมาย (Rebel)</h3>
+                                <ul class="space-y-2 text-sm text-slate-400 pl-4">
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">1.</span> ต้องดูสถานการณ์ก่อนว่าปลอดภัยหรือไม่ หากปลอดภัยแพทย์สามารถเข้าไปชุุบชีวิตได้ และใส่บิลตามพื้นที่ หากไม่ปกติ ให้รอเหตุการณ์นั้น ๆ ให้สลบลงก่อน หรือเรียกตำรวจมาช่วยเปิดพื้นที่เคอร์ฟิวเพื่อขอศพมาชุบ</li>
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">2.</span> <strong class="text-slate-300">ไม่สามารถฉีดยาได้</strong></li>
+                                </ul>
+                            </div>
+
+                            <!-- Card 4 -->
+                            <div class="glass-panel p-5 rounded-xl border border-slate-800/80 shadow-lg relative overflow-hidden">
+                                <div class="absolute top-0 left-0 w-1 h-full bg-orange-400"></div>
+                                <h3 class="text-sm font-semibold text-white mb-3">⛓️ เคสพื้นที่คุก</h3>
+                                <ul class="space-y-2 text-sm text-slate-400 pl-4">
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">1.</span> หากพื้นที่ปลอดภัย สามารถชุบได้เลย หากพื้นที่ไม่ปลอดภัย ให้แพทย์เจ้าของเคสอุ้มคนสลบขึ้นรถหรือฮอแล้วนำไปชุบบริเวณอื่นที่ปลอดภัยภายใน "คุก" ได้เลย</li>
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">2.</span> หากเป็นพื้นที่บริเวณคุก หรือผู้สลบสวมใส่ชุดนักโทษ แพทย์จะเข้าวอบอก ตร. ให้มาร่วมดำเนินคดี แต่หากไม่มีตร. แพทย์จะนำไปชุบที่ สน.</li>
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">3.</span> <strong class="text-slate-300">ไม่สามารถฉีดยาได้</strong></li>
+                                </ul>
+                            </div>
+
+                            <!-- Card 5 -->
+                            <div class="glass-panel p-5 rounded-xl border border-slate-800/80 shadow-lg relative overflow-hidden">
+                                <div class="absolute top-0 left-0 w-1 h-full bg-purple-400"></div>
+                                <h3 class="text-sm font-semibold text-white mb-3">⚠️ เคสพื้นที่สุ่มเสี่ยง (งานดำ)</h3>
+                                <ul class="space-y-2 text-sm text-slate-400 pl-4">
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">1.</span> เมื่อถึงพื้นที่เคส ให้แพทย์ที่รับเคส เข้าวอขอความช่วยเหลือ ตร. ให้มายังพื้นที่เคสนั้น หากไม่มี ตร.มา สามารถชุบได้เลย</li>
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">2.</span> <strong class="text-slate-300">ไม่สามารถฉีดยาได้</strong></li>
+                                </ul>
+                            </div>
+
+                            <!-- Card 6 -->
+                            <div class="glass-panel p-6 rounded-xl border border-slate-800/80 shadow-lg lg:col-span-2 relative overflow-hidden bg-amber-900/10">
+                                <div class="absolute top-0 left-0 w-1 h-full bg-amber-400"></div>
+                                <h3 class="text-sm font-semibold text-white mb-3">⚔️ เคสทะเลาะวิวาท (สตอรี่เถื่อน)</h3>
+                                <ul class="space-y-2 text-sm text-slate-400 pl-4">
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">1.</span> แพทย์จะอยู่บนรถรอจนเหตุการณ์สงบลง แพทย์จึงจะเปิดไซเรนและเคอร์ฟิวรวมถึงประกาศให้ออกจากพื้นที่ เพื่อทำการเข้าพื้นที่ไปขอศพ</li>
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">2.</span> ในระหว่างเปิดวงเคอร์ฟิว หากมีผู้ฝ่าฝืน ก่อกวน ขัดขวางการทำงานแพทย์ แพทย์จะทำการ Blacklist ทันที</li>
+                                    <li class="relative"><span class="absolute -left-4 text-slate-600">3.</span> นำผู้สลบทุกคนกลับมาชุบที่โรงพยาบาลที่ใกล้ที่สุด</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ==========================================
+                         TAB 4: อัตราค่ารักษา
+                    =========================================== -->
+                    <section id="pricing" class="tab-content hidden">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold text-white tracking-wide flex items-center gap-3">
+                                <i class="fa-solid fa-file-invoice-dollar text-sky-500"></i> อัตราค่ารักษาราคา
+                            </h2>
+                            <p class="text-slate-500 text-sm mt-1 ml-9">Pricing & Services</p>
+                        </div>
+                        
+                        <div class="glass-panel rounded-xl overflow-hidden shadow-lg border border-slate-800/80 max-w-4xl">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-900/90 text-slate-400 text-xs tracking-wider border-b border-slate-800">
+                                        <th class="p-4 font-medium w-16 text-center">#</th>
+                                        <th class="p-4 font-medium">รายการ (Service)</th>
+                                        <th class="p-4 font-medium text-right w-48">ราคา ($)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800/50 text-sm md:text-base">
+                                    <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">01</td><td class="p-4 text-slate-300">CPR เขตโรงพยาบาล และ ในเมือง</td><td class="p-4 text-right font-mono text-slate-200">3,000</td></tr>
+                                    <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">02</td><td class="p-4 text-slate-300">CPR เขตนอกเมือง</td><td class="p-4 text-right font-mono text-slate-200">4,000</td></tr>
+                                    <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">03</td><td class="p-4 text-slate-300">CPR เขตเมืองบน</td><td class="p-4 text-right font-mono text-slate-200">5,000</td></tr>
+                                    <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">04</td><td class="p-4 text-slate-300">CPR พื้นที่เข้าถึงยาก <span class="text-slate-500 text-xs">(เช่น บนเขา , น้ำลึก , ใต้อุโมงค์)</span></td><td class="p-4 text-right font-mono text-slate-200">7,000</td></tr>
+                                    <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">05</td><td class="p-4 text-slate-300">CPR เขตพื้นที่สุ่มเสี่ยง <span class="text-slate-500 text-xs">(บริเวณรอบพื้นที่ทำงานดำ , คุก)</span></td><td class="p-4 text-right font-mono text-slate-200">6,000</td></tr>
+                                    <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">06</td><td class="p-4 text-slate-300">CPR เขตพื้ื้นที่ไร้กฎหมาย <span class="text-slate-500 text-xs">(เรเบล)</span></td><td class="p-4 text-right font-mono text-slate-200">6,000</td></tr>
+                                    <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">07</td><td class="p-4 text-slate-300">ฉีดยา</td><td class="p-4 text-right font-mono text-slate-200">2,500</td></tr>
+                                    <tr class="hover:bg-slate-800/30 transition-colors"><td class="p-4 text-center text-slate-500 font-mono">08</td><td class="p-4 text-slate-300">เสาฉีดยา</td><td class="p-4 text-right font-mono text-slate-200">2,500</td></tr>
+                                    
+                                    <!-- เงื่อนไขพิเศษ -->
+                                    <tr class="bg-slate-900/60"><td class="p-4 text-center text-sky-400 text-xs">⭐</td><td class="p-4 text-slate-300">ผู้เล่นใหม่บิลจะถูกหักเองอัตโนมัติทั้งชุบและฉีด <span class="text-slate-500 text-xs">(เมื่อมีบัตรผู้เล่นใหม่ในตัว)</span></td><td class="p-4 text-right text-slate-500">-</td></tr>
+                                    <tr class="bg-slate-900/60"><td class="p-4 text-center text-sky-400 text-xs">⭐</td><td class="p-4 text-slate-300">เคสเคลื่อนที่ x3 จากจุดแรกที่ได้รับเคส</td><td class="p-4 text-right"><span class="badge-amber">x3</span><br><span class="text-[10px] text-slate-400 mt-1 block">ตามพื้นที่ที่ค่ารักษาเยอะที่สุด</span></td></tr>
+                                    <tr id="pr-11" class="bg-slate-900/60"><td class="p-4 text-center text-sky-400 text-xs">⭐</td><td class="p-4 text-slate-300">เคสที่ชุบกันเองหรือฝ่ายอื่นชุบให้ หรือชุบต่อหน้าแพทย์ <br><span class="text-slate-500 text-xs">(แพทย์ถึงจุดแล้ว ไม่มีการแจ้งใด ๆ)</span></td><td class="p-4 text-right"><span class="badge-amber">ปรับใส่บิล x2</span><br><span class="text-[10px] text-slate-400 mt-1 block">จากพื้นที่เคสนั้น ๆ แม้จะไม่ได้ทำการรักษา</span></td></tr>
+                                    <tr class="bg-slate-900/60"><td class="p-4 text-center text-sky-400 text-xs">⭐</td><td class="p-4 text-slate-300">หน่วยงานคิด 50% <span class="text-slate-500 text-xs">(สตอรี่ชุบฟรี)</span></td><td class="p-4 text-right text-emerald-400 font-medium">50% ทุกกรณี</td></tr>
+                                    <tr class="bg-slate-900/60"><td class="p-4 text-center text-sky-400 text-xs">⭐</td><td class="p-4 text-slate-300">มีบัตรผู้เล่นใหม่ คิด 50%</td><td class="p-4 text-right text-emerald-400 font-medium">50% เฉพาะเคสปกติ</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- ==========================================
+                         TAB 5: กฎและวินัยแพทย์
+                    =========================================== -->
+                    <section id="doctor-rules" class="tab-content hidden">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold text-white tracking-wide flex items-center gap-3">
+                                <i class="fa-solid fa-user-doctor text-sky-500"></i> กฎข้อบังคับและวินัยของบุคลากรทางการแพทย์
+                            </h2>
+                            <p class="text-slate-500 text-sm mt-1 ml-9">Staff Rules & Regulations</p>
+                        </div>
+                        
+                        <div class="glass-panel rounded-xl overflow-hidden shadow-lg border border-slate-800/80 mb-6">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-900/90 text-slate-400 text-xs tracking-wider border-b border-slate-800">
+                                            <th class="p-4 font-medium w-16 text-center">ข้อ</th>
+                                            <th class="p-4 font-medium">รายละเอียด</th>
+                                            <th class="p-4 font-medium w-48 text-center">บทลงโทษ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800/50 text-sm">
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">01</td><td class="p-4 text-slate-300">แพทย์ไม่สามารถบอกข้อมูลภายในให้กับบุคคลภายนอกรับรู้ได้</td><td class="p-4 text-center text-slate-500 text-xs">ลงโทษตามดุลยพินิจ ผอ.</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">02</td><td class="p-4 text-slate-300">ห้ามเป็นแพทย์ดำ (ช่วยเหลือ / เอื้อผลประโยชน์ / ยุ่งเกี่ยวกับแก๊งหรือครอบครัว / บอก GPS / เป็นท่อเลี้ยงให้แก๊งหรือครอบครัว นำของจากโรงพยาบาลไปให้ผู้อื่น)</td><td class="p-4 text-center"><span class="badge-red">ปลดทันที</span></td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">03</td><td class="p-4 text-slate-300">แพทย์เป็นกลางรักษาทุกคน โดยเรียงลำดับการรักษาดังนี้: แพทย์ > ตำรวจ > ประชาชน</td><td class="p-4 text-center font-mono text-slate-200">200,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">04</td><td class="p-4 text-slate-300">แพทย์ต้องรักชีวิตตัวเอง หากเจอสถานการณ์ที่เสี่ยงอันตราย ให้แจ้งในวอทุกครั้ง หากแพทย์สลบให้ทำการแจ้งในนิตยสารประเทศ</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">05</td><td class="p-4 text-slate-300">แพทย์ต้องมีมนุษยสัมพันธ์ที่ดี พูดจาสุภาพ เคารพ ให้เกียรติ และเข้ากับผู้อื่นได้</td><td class="p-4 text-center text-slate-500 text-xs">ลงโทษตามดุลยพินิจ ผอ.</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">06</td><td class="p-4 text-slate-300">ห้ามใส่ชุดแพทย์ขณะออกเวร</td><td class="p-4 text-center font-mono text-slate-200">200,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">07</td><td class="p-4 text-slate-300">แพทย์ห้ามกระทำการก่ออาชญากรรม (ปล้น ฆาตกรรม)</td><td class="p-4 text-center"><span class="badge-red">ปลดทันที</span></td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">08</td><td class="p-4 text-slate-300">ขณะเข้าเวร ต้องแต่งกายด้วยเครื่องแบบแพทย์ให้เหมาะสม ( เครื่องแบบแพทย์ + ปลอกแขน + ถุงมือสีฟ้า ) ยกเว้นวันศุกร์ - เสาร์ - อาทิตย์ สามารถใส่ชุดลำลองใดก็ได้ แต่ต้องมีปลอกแขนและถุงมือด้วยทุกครั้ง</td><td class="p-4 text-center font-mono text-slate-200">200,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">09</td><td class="p-4 text-slate-300">ขณะเข้าเวร ต้องมีความพร้อมในการปฏิบัติงานตลอดเวลา ห้ามเหม่อเกินระยะเวลาที่กำหนดหรือนอกพื้นที่ที่กำหนด ต้องประจำการที่โรงพยาบาลตลอด หากมีเหตุฉุกเฉินต้องแจ้งทุกครั้ง</td><td class="p-4 text-center font-mono text-slate-200">300,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">10</td><td class="p-4 text-slate-300">ขณะเข้าเวร ห้ามแพทย์ทำร้ายกันต่อหน้าประชาชน</td><td class="p-4 text-center font-mono text-slate-200">500,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">11</td><td class="p-4 text-slate-300">ขณะออกเวร ห้ามใช้อุปกรณ์ที่เกี่ยวกับหน่วยงานแพทย์ (หรือเข้าเวรเข้า ๆ ออกๆ เพื่อผลประโยชน์ส่วนตน เช่น เพื่อเพิ่มเลือด / กินMRE / ซ่อมรถ)</td><td class="p-4 text-center font-mono text-slate-200">1,000,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">12</td><td class="p-4 text-slate-300">ขณะสวมเครื่องแบบแพทย์และอยู่ในเวลางาน (On Duty) ห้ามแพทย์ซื้อ-ขาย แลกเปลี่ยน สิ่งของผิดกฎหมายทุกชนิด</td><td class="p-4 text-center"><span class="badge-amber mb-1">ปรับ X5 ของที่ซื้อขาย</span><br><span class="text-[10px] text-slate-500">และให้ตำรวจดำเนินคดี</span></td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">13</td><td class="p-4 text-slate-300">ช่วงเวลาพีคไทม์ <span class="bg-slate-800 px-1 rounded text-xs border border-slate-700 mx-1">[แก้ตามความเป็นจริง]</span> ห้ามออกเวรเด็ดขาด หากแพทย์ถึง 8 คน หากพบเจอในประเทศ จะทำการปรับตามสมควร</td><td class="p-4 text-center font-mono text-slate-200">300,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">14</td><td class="p-4 text-slate-300">ห้ามขโมยของในตู้เซฟ</td><td class="p-4 text-center"><span class="badge-red mb-1">ถูกปลดในทันที</span><br><span class="text-[10px] text-slate-500">พร้อมรีตัว(หน่วยงานดำ)</span></td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">15</td><td class="p-4 text-slate-300">แพทย์ต้องเข้าประชุมทุกครั้ง หากขาดประชุมต้องแจ้งลาอย่างน้อย 1 ชั่วโมงก่อนถึงเวลาเริ่มการประชุม</td><td class="p-4 text-center font-mono text-slate-200">100,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">16</td><td class="p-4 text-slate-300">เหม่อได้ไม่เกิน 15 นาที และต้องแจ้งในวิทยุสื่อสารทุกครั้ง (ถ้าเกิน 15 นาที ต้องออกเวรเท่านั้น )</td><td class="p-4 text-center font-mono text-slate-200">100,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">17</td><td class="p-4 text-slate-300">เข้าเวรวันละ 3 ชั่วโมง</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">18</td><td class="p-4 text-slate-300">เข้าเวรหลักอย่างน้อย 21 ชั่วโมง จึงจะออกเวรภายในเมืองได้</td><td class="p-4 text-center font-mono text-slate-200">300,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">19</td><td class="p-4 text-slate-300">เข้าเวรหลักอย่างน้อย 40 ชั่วโมง จึงจะสามารถพักร้อนได้</td><td class="p-4 text-center font-mono text-slate-200">500,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">20</td><td class="p-4 text-slate-300">สามารถลาพักร้อนได้สูงสุด 7 วัน ต่อเดือน โดยมีเงื่อนไขในการลาพักร้อน</td><td class="p-4 text-center text-slate-600">-</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">21</td><td class="p-4 text-slate-300">กรณีลาเวรติดต่อกัน 7 วันขึ้นไป</td><td class="p-4 text-center text-slate-500 text-xs">ขึ้นอยู่กับดุลยพินิจ ผอ.</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">22</td><td class="p-4 text-slate-300">ขาดงาน 5 วัน โดยไม่แจ้งลา</td><td class="p-4 text-center"><span class="badge-red mb-1">ปลดจากแพทย์ทันที</span><br><span class="text-[10px] text-slate-500">(พิจารณาจากอายุงาน)</span></td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">23</td><td class="p-4 text-slate-300">สัญญาแพทย์ 70 วัน หากเข้าครบ และประสงค์จะออก จะติดคูลดาวน์ 5 วัน หากเข้าไม่ครบ แต่ประสงค์จะออก จะโดนค่าฉีกสัญญา</td><td class="p-4 text-center font-mono text-slate-200">5,000,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">24</td><td class="p-4 text-slate-300">หากแพทย์เรื้อน ด่า ทำร้ายผู้อื่นก่อน โดยไม่มีสาเหตุ และไม่รู้จักกันมาก่อน จนเกิดการร้องเรียน (หากแพทย์โดนด่าก่อนจะถือว่าไม่ใช่แพทย์เรื้อน จะโดนวินัยข้ออื่นหากด่าสวนตามความผิด)</td><td class="p-4 text-center"><span class="badge-red">ปลดจากแพทย์ทันที</span></td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">25</td><td class="p-4 text-slate-300">หากนอกช่วงเวลาพีคไทม์ มีเหตุให้ต้องเรียกตัวกลับเข้าเวร ต้องกลับเข้าเวรทันที หากเรียกตัวแล้วเกิน 15 นาที ยังไม่กลับมาเข้าเวร จะทำการปรับทันที</td><td class="p-4 text-center font-mono text-slate-200">300,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">26</td><td class="p-4 text-slate-300">ขณะเข้าเวรต้องเข้าวอทุกครั้ง</td><td class="p-4 text-center font-mono text-slate-200">50,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">27</td><td class="p-4 text-slate-300">ต้องใช้พาหนะหน่วยงานในการปฏิบัตหน้าที่ ( การรับเคส ) ทุกครั้ง ไม่ใช้รถส่วนตัวในการรับเคส</td><td class="p-4 text-center font-mono text-slate-200">300,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">28</td><td class="p-4 text-slate-300">แพทย์ต้องใส่แท็ก นำหน้าชื่อทุกครั้ง</td><td class="p-4 text-center font-mono text-slate-200">50,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">29</td><td class="p-4 text-slate-300">แพทย์ควรมีบันทึกการทำงานเสมอ</td><td class="p-4 text-center font-mono text-slate-200">300,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">30</td><td class="p-4 text-slate-300">แพทย์ต้องใส่บิลก่อนทำการรักษาทุกครั้ง และห้ามใส่บิลกันเล่นเด็ดขาด</td><td class="p-4 text-center font-mono text-slate-200">300,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">31</td><td class="p-4 text-slate-300">ห้ามอุ้ม หรือตีเล่นกับแก๊งหรือครอบครัวขณะเข้าเวร (หากไม่มีสัญลักษณ์แก๊งหรือครอบครัว ถือว่าอนุโลมได้)</td><td class="p-4 text-center font-mono text-slate-200">300,000</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">32</td><td class="p-4 text-slate-300">การนำเฮลิคอปเตอร์ออกรับเคส จะทำได้ต่อเมื่อเป็นเคสบนเขา ทางน้ำตื้น/ลึก หรือพื้นที่ที่รถยนต์ไม่สามารถเข้าถึงได้เท่านั้น ห้ามใช้ฮอบินรับเคสในเมืองหากไม่จำเป็น ต้องขึ้นอยู่กับดุลยพินิจแพทย์ยศชำนาญการขึ้นไปหรือยศสูงสุดขณะนั้น (หากเห็นว่าไม่จำเป็นจะลงโทษผู้ที่อนุญาตตามสมควร)</td><td class="p-4 text-center text-slate-500 text-xs">ลงโทษตามดุลยพินิจ ผอ.</td></tr>
+                                        <tr class="hover:bg-slate-800/30"><td class="p-4 text-center text-slate-500 font-mono">33</td><td class="p-4 text-slate-300">แพทย์ต้องไม่ปฏิเสธเคส</td><td class="p-4 text-center font-mono text-slate-200">300,000</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <p class="text-xs text-slate-500">* กฎทุกอย่างอาจมีการเปลี่ยนแปลงตามความเหมาะสมตามดุลยพินิจของ ผอ.</p>
+                        </div>
+                    </section>
+
+                    <!-- ==========================================
+                         TAB 6: ขอบเขตโรงพยาบาล 
+                    =========================================== -->
+                    <section id="hospital-bounds" class="tab-content hidden">
+                        <div class="mb-8 flex flex-col items-center text-center">
+                            <h2 class="text-2xl font-bold text-white tracking-wide flex items-center gap-3">
+                                <i class="fa-solid fa-map-location-dot text-sky-500"></i> ขอบเขตพื้นที่รับผิดชอบ
+                            </h2>
+                            <p class="text-slate-400 text-sm mt-2 max-w-2xl">
+                                พื้นที่ทั้งหมดที่แสดงในภาพถือเป็นเขตรับผิดชอบ ซึ่งอยู่ภายใต้กฎระเบียบและข้อบังคับของโรงพยาบาลอย่างเคร่งครัด
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                            <!-- Image 1 -->
+                            <div class="glass-panel p-2 rounded-xl border border-slate-800/80 group transition-all duration-300 hover:border-sky-500/50">
+                                <div class="aspect-video w-full bg-slate-900 rounded-lg overflow-hidden relative flex items-center justify-center mb-3">
+                                    <img src="bound-mockup-1.jpg" alt="โรงพยาบาลหลัก(ในเมือง)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100 relative z-10">
+                                </div>
+                                <div class="text-center pb-2">
+                                    <p class="text-white font-medium tracking-wide">โรงพยาบาลหลัก <span class="text-slate-400 font-light">(ในเมือง)</span></p>
+                                </div>
+                            </div>
+                            
+                            <!-- Image 2 -->
+                            <div class="glass-panel p-2 rounded-xl border border-slate-800/80 group transition-all duration-300 hover:border-sky-500/50">
+                                <div class="aspect-video w-full bg-slate-900 rounded-lg overflow-hidden relative flex items-center justify-center mb-3">
+                                    <img src="bound-mockup-2.jpg" alt="โรงพยาบาล Sandy Shores(ทะเลทราย)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100 relative z-10">
+                                </div>
+                                <div class="text-center pb-2">
+                                    <p class="text-white font-medium tracking-wide">โรงพยาบาล Sandy Shores <span class="text-slate-400 font-light">(ทะเลทราย)</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                 </div>
                 
-                <!-- Image 2 -->
-                <div class="glass-panel p-3 md:p-4 rounded-xl border border-cyan-900/30 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.5)] group flex flex-col items-center hover:-translate-y-1 transition-all duration-300">
-                    <div class="aspect-video w-full bg-slate-800 rounded-lg overflow-hidden relative flex items-center justify-center border border-slate-700/50 mb-4">
-                        <!-- เปลี่ยนรูปที่ 2 ตรงนี้ -->
-                        <img src="bound-mockup-2.jpg" alt="โรงพยาบาล Sandy Shores(ทะเลทราย)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 relative z-10">
-                    </div>
-                    <div class="bg-cyan-900/40 w-full py-2 px-4 rounded text-center border border-cyan-800/50">
-                        <p class="text-cyan-300 font-semibold text-base md:text-lg tracking-wide">โรงพยาบาล Sandy Shores (ทะเลทราย)</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+                <!-- Footer within scrollable area -->
+                <footer class="text-center py-10 text-slate-500 text-xs mt-10 border-t border-slate-800/50 max-w-6xl mx-auto">
+                    <p>&copy; 2026 Wind Medical Center Database. All Rights Reserved.</p>
+                </footer>
+            </main>
+        </div>
+    </div>
 
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-[#0f172a] border-t border-slate-800 text-center py-5 text-slate-500 text-xs md:text-sm mt-auto">
-        <p>&copy; 2026 Wind Medical Center. All Rights Reserved. กฎและข้อบังคับนี้มีผลบังคับใช้ทันที</p>
-    </footer>
-
-    <!-- JavaScript for Tab Switching Logic -->
+    <!-- JavaScript for Tab Switching, Mobile Menu, and Cross-Linking -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const tabs = document.querySelectorAll('.tab-btn');
+            const tabs = document.querySelectorAll('.nav-item');
             const contents = document.querySelectorAll('.tab-content');
+            const sidebar = document.getElementById('sidebar');
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const overlay = document.getElementById('sidebar-overlay');
+            const mainContent = document.getElementById('main-content');
 
+            // --- Toggle Mobile Menu ---
+            function toggleMenu() {
+                sidebar.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
+            }
+            mobileBtn.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+
+            // --- Switch Tabs ---
             function switchTab(targetId) {
+                // Hide all contents
                 contents.forEach(content => {
                     content.classList.add('hidden');
-                    content.classList.remove('animate-fade-in-up');
+                    content.classList.remove('animate-fade-in');
                 });
 
-                tabs.forEach(tab => {
-                    tab.classList.remove('active', 'text-blue-400', 'text-cyan-400');
-                    tab.classList.add('text-slate-400');
-                });
+                // Remove active state from all tabs
+                tabs.forEach(tab => tab.classList.remove('active'));
 
+                // Show target content
                 const targetContent = document.getElementById(targetId);
                 if (targetContent) {
                     targetContent.classList.remove('hidden');
-                    void targetContent.offsetWidth; 
-                    targetContent.classList.add('animate-fade-in-up');
+                    void targetContent.offsetWidth; // trigger reflow
+                    targetContent.classList.add('animate-fade-in');
                 }
 
-                const activeTab = document.querySelector(`.tab-btn[data-target="${targetId}"]`);
+                // Highlight active tab
+                const activeTab = document.querySelector(`.nav-item[data-target="${targetId}"]`);
                 if (activeTab) {
-                    activeTab.classList.remove('text-slate-400');
-                    
-                    if(targetId === 'hospital-bounds') {
-                        activeTab.classList.add('active', 'text-cyan-400');
-                    } else {
-                        activeTab.classList.add('active', 'text-blue-400');
-                    }
-                    
-                    if (window.innerWidth < 768) {
-                        window.scrollTo({ top: 320, behavior: 'smooth' });
-                    }
+                    activeTab.classList.add('active');
+                }
+                
+                // Scroll to top of main content area (unless triggered by cross-linking)
+                if (!window.isCrossLinking) {
+                    mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+
+                // Close mobile menu if open
+                if (window.innerWidth < 768 && !sidebar.classList.contains('-translate-x-full')) {
+                    toggleMenu();
                 }
             }
 
+            // Click event for tabs
             tabs.forEach(tab => {
                 tab.addEventListener('click', (e) => {
-                    switchTab(e.target.dataset.target);
+                    switchTab(e.currentTarget.dataset.target);
                 });
             });
 
+            // --- Cross Linking Function ---
+            window.goToRule = function(tabId, rowId) {
+                window.isCrossLinking = true; 
+                
+                // 1. Switch tab
+                switchTab(tabId);
+
+                // 2. Scroll to row and highlight
+                setTimeout(() => {
+                    const row = document.getElementById(rowId);
+                    if (row) {
+                        // Scroll relative to the main container
+                        const containerTop = mainContent.scrollTop;
+                        const rowTop = row.getBoundingClientRect().top;
+                        const mainTop = mainContent.getBoundingClientRect().top;
+                        
+                        mainContent.scrollTo({
+                            top: containerTop + rowTop - mainTop - 100, // offset for visibility
+                            behavior: 'smooth'
+                        });
+                        
+                        // Flash animation
+                        row.classList.remove('flash-row');
+                        void row.offsetWidth; 
+                        row.classList.add('flash-row');
+                    }
+                    setTimeout(() => { window.isCrossLinking = false; }, 500);
+                }, 100);
+            };
+
+            // Set Initial Tab
             switchTab('director-info');
         });
     </script>
